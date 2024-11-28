@@ -18,7 +18,7 @@ mongoose.connect(mongoUrl,{})
 const connection = mongoose.connection;
 
 connection.once("open",()=>{
-  console.log("Database connected");
+  console.log("Connection to the mongoDB is successfully established. !");
 })
 
 
