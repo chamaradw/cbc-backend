@@ -27,9 +27,6 @@ app.use(bodyParser.json())
 app.use(
 
   (req,res,next)=>{
-
-
-
     const token = req.header("Authorization")?.replace("Bearer ","")
     console.log(token)
 
@@ -59,3 +56,4 @@ app.listen(
     console.log('Server is running on port 5000');
   }
 )
+
