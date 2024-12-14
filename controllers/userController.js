@@ -65,3 +65,16 @@ export function loginUser(req,res){
     }
   )
 }
+
+
+export function deleteUser(req,res){
+  Student.deleteOne({name : req.body.name}).then(
+    ()=>{
+      res.json(
+        {
+          message : "Requested user deleted successfully"
+        }
+      )
+    }
+  )
+}
