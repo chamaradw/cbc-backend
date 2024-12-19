@@ -3,9 +3,9 @@ import { createProduct, deleteProduct, getProduct, getProductByName } from '../c
 
 const productRouter = express.Router();
 
+
+productRouter.post('/',createProduct);
 productRouter.get('/',getProduct);
-
-
 
 productRouter.get("/filter", (req,res)=>{
   res.json({
@@ -15,9 +15,10 @@ productRouter.get("/filter", (req,res)=>{
 
 productRouter.get("/:name",getProductByName)
 
-
-productRouter.post('/',createProduct);
 productRouter.delete("/:name",deleteProduct);
+
+
+
 
 
 
