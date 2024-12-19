@@ -93,3 +93,16 @@ export function deleteUser(req,res){
     }
   )
 }
+export function isadmin(req){
+  if(req.user?.type == "admin"){
+    return true
+  }
+  return false
+}
+
+export function iscustomer(req){
+  if(req.user?.type == "customer"){
+    return true
+  }
+  return false
+}
