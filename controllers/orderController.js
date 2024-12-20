@@ -52,3 +52,19 @@ console.log(order)
   }
 
 }
+
+
+export async function getAllOrders(req,res){
+
+  try{  
+    const orders = await Order.find({email : req.user.email})
+
+    res.json({
+      orders
+    })
+  }catch(error){
+    res.status(500).json({  
+      message: error.message,
+    })  
+  }
+}
