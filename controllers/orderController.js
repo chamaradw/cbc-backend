@@ -45,7 +45,7 @@ export async function createOrder(req,res){//check whether customer or not
         productId: newOrderData.ordereditems[i].productId
       })
 
-      console.log(product)  
+      //console.log(product)  
 
       if (!product == null) {
         res.json({
@@ -96,6 +96,7 @@ export async function getAllOrders(req,res){
 
   try{  
     const orders = await Order.find({email : req.user.email})
+      //console.log(orders)
     res.json({orders})
     }
   catch(error){res.status(500).json({message: error.message,})}

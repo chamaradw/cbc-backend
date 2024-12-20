@@ -9,6 +9,7 @@ export async function getProduct(req,res){
     res.json({
       list : productList
     })
+    console.log(productList)
   }catch(e){
     res.json({
       message : "Error"
@@ -45,7 +46,9 @@ export function createProduct(req,res){
     })
   }).catch(()=>{
     res.json({
-      message: error
+      message:Error
+      
+    
     })
   })
 }
@@ -87,6 +90,7 @@ export function getProductByName(req,res){
         res.json({
           list : productList
         })
+        
       }
 
       
