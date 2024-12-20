@@ -16,8 +16,11 @@ export async function createOrder(req,res){//check whether customer or not
     let orderId // define variable for assign order ID
 
     //assigne fetched order ID in to a variable
-    if(latestOrder.length == 0){
+
+    if(latestOrder && latestOrder.length == 0){
+
       orderId = "CBC1001"     //asgin customized order ID
+
     }else{
       const currentOrderId = latestOrder[0].orderId // assign current order ID as lst order ID
 
@@ -30,7 +33,42 @@ export async function createOrder(req,res){//check whether customer or not
       orderId = "CBC" + newNumber //concatinated CBC with incremented number
     }
 
-    const newOrderData = req.body
+    const newOrderData = req.body //get order data from request body
+
+    const newProductArray = []   //define product array to validation of product ID
+
+    for (let i = 0; i < newOrderData.ordereditems.length; i++) 
+      {
+      //console.log(newOrderData.ordereditems[i])
+    
+      const product = await product.findone({
+        productId: newOrderData.ordereditems[i].productId
+      })
+
+      console.log(product)  
+
+      if (!product == null) {
+        res.json({
+          message: "Product with ID " + newOrderData.ordereditems[i].productId + " not found"
+        })
+     return
+    }
+
+    newProductArray[i]={
+      //productId: product.productId,
+      name : product.name,
+      price : product.price,
+      quantity : newOrderData.ordereditems[i].quantity,
+      ImageUrl : product.images[0]
+    }
+      
+    }
+
+    console.log(newProductArray)
+
+    newOrderData.ordereditems = newProductArray
+
+
     newOrderData.orderId = orderId //assgine newly created order ID
     newOrderData.email = req.user.email
 
@@ -41,10 +79,9 @@ export async function createOrder(req,res){//check whether customer or not
     res.json({
       message: "Order created"
     })
-
-console.log(order)
-
-  }catch(error){
+    //console.log(order)
+  }
+  catch(error){
     res.status(500).json({
       message: error.message,
       
@@ -54,17 +91,12 @@ console.log(order)
 }
 
 
+
 export async function getAllOrders(req,res){
 
   try{  
     const orders = await Order.find({email : req.user.email})
-
-    res.json({
-      orders
-    })
-  }catch(error){
-    res.status(500).json({  
-      message: error.message,
-    })  
-  }
+    res.json({orders})
+    }
+  catch(error){res.status(500).json({message: error.message,})}
 }
