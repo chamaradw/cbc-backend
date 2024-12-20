@@ -1,12 +1,17 @@
 import mongoose from "mongoose";
 
 const orderSchema = mongoose.Schema({
-  user: { 
+  orderID:{
+    type: String, 
+    required: true,},
+  
+  user: { //email of the user
     type: mongoose.Schema.Types.ObjectId, 
     ref: "users", 
     required: true 
   }, // Reference to the user placing the order
-  items: [
+
+  Oedereditems: [
     {
       product: { 
         type: mongoose.Schema.Types.ObjectId, 
@@ -34,7 +39,8 @@ const orderSchema = mongoose.Schema({
     city: { type: String, required: true },
     state: { type: String, required: true },
     postalCode: { type: String, required: true },
-    country: { type: String, required: true }
+    country: { type: String, required: true },
+    phoneNumber: { type: String, required: true },
   }, // Address for shipping the order
   paymentMethod: { 
     type: String, 

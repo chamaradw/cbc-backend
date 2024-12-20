@@ -12,7 +12,7 @@ app.use("/api/orders", orderRoutes);
 
 // Connect to Database and Start Server
 mongoose
-  .connect("mongodb://localhost:27017/ecommerce", {
+  .connect("mongodb+srv://db:801023@cluster0.1tsq9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })

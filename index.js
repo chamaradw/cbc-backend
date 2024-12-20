@@ -3,7 +3,8 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import productRouter from './routes/productRouter.js';
 import userRouter from './routes/userRouter.js';
-import orderRoutes from './models/oders.js';
+import orderRoutes from './routes/orderRouter.js';
+
 import dotenv from 'dotenv';
 import jwt from "jsonwebtoken";
 
