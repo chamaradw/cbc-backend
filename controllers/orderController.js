@@ -1,5 +1,5 @@
-import Order from "../models/order.js"
-import { isCustomer } from "../user/permission.js"; // import isCustomer function
+import Order from "../models/order.js";
+import { isCustomer } from "../controllers/userController.js"; // import isCustomer function
 
 
 export async function createOrder(req,res){//check whether customer or not
@@ -42,11 +42,12 @@ export async function createOrder(req,res){//check whether customer or not
       message: "Order created"
     })
 
-
+console.log(order)
 
   }catch(error){
     res.status(500).json({
-      message: error.message
+      message: error.message,
+      
     })
   }
 

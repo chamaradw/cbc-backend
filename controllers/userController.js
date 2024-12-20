@@ -82,6 +82,22 @@ export function loginUser(req,res){
 }
 
 
+export function logoutUser(req, res) {
+  try {
+    // Remove the token from client-side storage by sending a response
+    res.json({
+      message: "User logged out successfully",
+      token: null // You can send null or an expired token to indicate logout
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error logging out",
+      error: error.message
+    });
+  }
+}
+
+
 export function deleteUser(req,res){
   Student.deleteOne({name : req.body.name}).then(
     ()=>{
@@ -100,9 +116,10 @@ export function isadmin(req){
   return false
 }
 
-export function iscustomer(req){
+export function isCustomer(req){
   if(req.user?.type == "customer"){
     return true
   }
   return false
 }
+
