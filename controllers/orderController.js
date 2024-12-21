@@ -1,4 +1,5 @@
 import Order from "../models/order.js";
+import Product from "../models/product.js";
 import { isCustomer } from "../controllers/userController.js"; // import isCustomer function
 
 

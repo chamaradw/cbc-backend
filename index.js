@@ -51,7 +51,7 @@ app.use(
 
 app.use("/api/products",productRouter)
 app.use("/api/users",userRouter)
-app.use("/api/order",orderRoutes)
+app.use("/api/orders",orderRoutes)
 
 
 app.listen(
