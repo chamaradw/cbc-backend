@@ -39,7 +39,7 @@ export async function createOrder(req,res){//check whether customer or not
 
     for (let i = 0; i < newOrderData.ordereditems.length; i++) 
       {
-      //console.log(newOrderData.ordereditems[i])
+      console.log(newOrderData.ordereditems[i])
     
       const product = await product.findone({
         productId: newOrderData.ordereditems[i].productId
@@ -83,7 +83,7 @@ export async function createOrder(req,res){//check whether customer or not
   }
   catch(error){
     res.status(500).json({
-      message: error.message,
+      message: error.message
       
     })
   }
