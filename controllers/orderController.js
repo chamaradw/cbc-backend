@@ -1,5 +1,5 @@
 import Order from "../models/order.js";
-import Product from "../models/product.js";
+import product from "../models/product.js";
 import { isCustomer } from "../controllers/userController.js"; // import isCustomer function
 
 
@@ -12,6 +12,8 @@ export async function createOrder(req,res){//check whether customer or not
   }
 //fetch latest product ID
   try{
+
+
     const latestOrder = await Order.find().sort({date : -1}).limit(1)
 
     let orderId // define variable for assign order ID
@@ -20,7 +22,7 @@ export async function createOrder(req,res){//check whether customer or not
 
     if(latestOrder && latestOrder.length == 0){
 
-      orderId = "CBC1001"     //asgin customized order ID
+      orderId = "CBC1001"     //asgin customized order ID and start from there
 
     }else{
       const currentOrderId = latestOrder[0].orderId // assign current order ID as lst order ID
@@ -38,36 +40,34 @@ export async function createOrder(req,res){//check whether customer or not
 
     const newProductArray = []   //define product array to validation of product ID
 
-    for (let i = 0; i < newOrderData.ordereditems.length; i++) 
+    for (let i = 0; i < newOrderData.orderedItems.length; i++) 
       {
-      console.log(newOrderData.ordereditems[i])
-    
-      const product = await product.findone({
-        productId: newOrderData.ordereditems[i].productId
-      })
+       // console.log(newOrderData.orderedItems[i]) //print item list in consle for ref
 
-      //console.log(product)  
+        const product = await product.findone({
+        productId: newOrderData.orderedItems[i].productId
+      })
+      console.log(product)  
 
       if (!product == null) {
         res.json({
-          message: "Product with ID " + newOrderData.ordereditems[i].productId + " not found"
+          message: "Product with ID " + newOrderData.orderedItems[i].productId + " not found"
         })
      return
     }
 
     newProductArray[i]={
-      //productId: product.productId,
       name : product.name,
       price : product.price,
-      quantity : newOrderData.ordereditems[i].quantity,
-      ImageUrl : product.images[0]
+      quantity : newOrderData.orderedItems[i].quantity,
+      image : product.images[0]
     }
       
     }
 
     console.log(newProductArray)
 
-    newOrderData.ordereditems = newProductArray
+    newOrderData.orderedItems = newProductArray
 
 
     newOrderData.orderId = orderId //assgine newly created order ID
