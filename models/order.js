@@ -10,7 +10,7 @@ const orderSchema = mongoose.Schema({
     type : String,
     required : true
   },
-  orderedItems : [
+  orderedItems : [//orderedItems array
     {
       name : {
         type : String,
@@ -39,20 +39,20 @@ const orderSchema = mongoose.Schema({
   },
   status : {
     type : String,
-    default : "preparing"
+    default : "Processing"
   },
   notes : {
     type : String
   },
-  name : {
+  name : {          //name of the customer
     type : String,
     required : true
   },
-  address : {
+  address : {       //address of the customer
     type : String,
     required : true
   },
-  phone : {
+  phone : {         //phone number of the customer
     type : String,
     required : true
   }
