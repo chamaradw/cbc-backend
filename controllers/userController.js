@@ -3,24 +3,26 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config()
-
 export function createUser(req,res){
 
   const newUserData = req.body
+
   if(newUserData.type == "admin"){
 
     if(req.user==null){
-      response.json({
-        message : "You are not authorized to create an admin,Please login as an admin to create an admin accounts"
-      })
-    
-  }
-    if (req.user?.type != "admin") {
       res.json({
-        message: "You are not authorized to create an admin,Please login as an admin to create an admin accounts"
+        message: "Please login as administrator to create admin accounts"
       })
       return
-    } 
+    }
+
+    if(req.user.type != "admin"){
+      res.json({
+        message: "Please login as administrator to create admin accounts"
+      })
+      return
+    }
+
   }
 
   newUserData.password = bcrypt.hashSync(newUserData.password, 10)  
@@ -81,45 +83,29 @@ export function loginUser(req,res){
   )
 }
 
-
-export function logoutUser(req, res) {
-  try {
-    // Remove the token from client-side storage by sending a response
-    res.json({
-      message: "User logged out successfully",
-      token: null // You can send null or an expired token to indicate logout
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Error logging out",
-      error: error.message
-    });
+export function isAdmin(req){
+  if(req.user==null){
+    return false
   }
-}
 
-
-export function deleteUser(req,res){
-  Student.deleteOne({name : req.body.name}).then(
-    ()=>{
-      res.json(
-        {
-          message : "Requested user deleted successfully"
-        }
-      )
-    }
-  )
-}
-export function isadmin(req){
-  if(req.user?.type == "admin"){
-    return true
+  if(req.user.type != "admin"){
+    return false
   }
-  return false
+
+  return true
 }
 
 export function isCustomer(req){
-  if(req.user?.type == "customer"){
-    return true
+  if(req.user==null){
+    return false
   }
-  return false
+
+  if(req.user.type != "customer"){
+    return false
+  }
+
+  return true
 }
 
+// malith27@example.com securepassword123 - admin
+// malith28@example.com securepassword123 -customer
