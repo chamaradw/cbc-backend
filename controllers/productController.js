@@ -31,6 +31,7 @@ export function getProducts(req, res) {
   Product.find({})
     .then((products) => {
       res.json(products); // Send the product list as a response
+      console.log(products)
     })
     .catch((error) => {
       console.error(error); // Log the error for debugging
