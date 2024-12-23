@@ -12,13 +12,17 @@ const orderSchema = mongoose.Schema({
   },
   orderedItems : [//orderedItems array
     {
-      name : {
+      productID : {
         type : String,
         required : true
       },
+      productName : {
+        type : String,
+       // required : truef
+      },
       price : {
         type : Number,
-        required : true
+        //required : true
       },
       quantity : {
         type : Number,
@@ -26,7 +30,7 @@ const orderSchema = mongoose.Schema({
       },
       image : {
         type : String,
-        required : true
+       // required : true
       }
     }
   ],
@@ -46,7 +50,7 @@ const orderSchema = mongoose.Schema({
   },
   name : {          //name of the customer
     type : String,
-    required : true
+    required : false
   },
   address : {       //address of the customer
     type : String,

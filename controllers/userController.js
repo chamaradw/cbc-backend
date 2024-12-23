@@ -107,5 +107,6 @@ export function isCustomer(req){
   return true
 }
 
-// malith27@example.com securepassword123 - admin
-// malith28@example.com securepassword123 -customer
+export function getUser(req,res){
+  res.json(req.user)
+}

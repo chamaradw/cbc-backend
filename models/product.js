@@ -22,7 +22,7 @@ const productSchema = mongoose.Schema({
   ],
   price : {
     type : Number,
-    required : true
+    //required : true
   },
   lastPrice : {
     type : Number,
@@ -36,6 +36,8 @@ const productSchema = mongoose.Schema({
     type : String,
     required : true
   }
+  
+
 })
 
 const Product = mongoose.model("products",productSchema);
