@@ -107,6 +107,47 @@ export function isCustomer(req){
   return true
 }
 
-export function getUser(req,res){
-  res.json(req.user)
+export function getUser(req, res) {
+  if (!req.user) {
+    return res.status(401).json({ message: "Unauthorized: No user logged in" });
+  }
+
+  // Exclude sensitive data from the user object
+  const { password, ...safeUserData } = req.user.toObject ? req.user.toObject() : req.user;
+
+  res.status(200).json(safeUserData);
+
+  console.log(req.user)
+}
+
+
+
+
+
+
+
+export function getAllUsers(req, res) {
+  // Check if the requester has admin privileges
+  if (!req.user || req.user.type !== "admin") {
+    return res.status(403).json({ message: "Forbidden: Admin access required" });
+  }
+
+  User.find()
+    .then((users) => {
+      // Exclude sensitive fields like passwords
+      const sanitizedUsers = users.map((user) => {
+        const { password, ...safeUserData } = user.toObject();
+        return safeUserData;
+      });
+
+      res.status(200).json(sanitizedUsers);
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: "Error retrieving users",
+        error: error.message,
+      });
+     
+    });
+    console.error(error);
 }
