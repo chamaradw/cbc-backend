@@ -45,86 +45,69 @@ export function loginUser(req,res){
 
   User.find({email : req.body.email}).then(
     (users)=>{
-      if(users.length == 0){
-
-        res.json({
-          message: "User not found"
-        })
-
-      }else{
-
+      if(users.length == 0){res.json({message: "User not found"})}
+      else
+      {
         const user = users[0]
-
         const isPasswordCorrect = bcrypt.compareSync(req.body.password,user.password)
-
-        if(isPasswordCorrect){
-
-          const token = jwt.sign({
-            email : user.email,
-            firstName : user.firstName,
-            lastName : user.lastName,
-            isBlocked : user.isBlocked,
-            type : user.type,
-            profilePicture : user.profilePicture
-          } , process.env.SECRET)
+        if(isPasswordCorrect)
+        {
+            const token = jwt.sign(
+            {
+              email : user.email,
+              firstName : user.firstName,
+              lastName : user.lastName,
+              isBlocked : user.isBlocked,
+              type : user.type,
+              profilePicture : user.profilePicture
+            },process.env.SECRET)
           
-          res.json({
-            message: "User logged in",
-            token: token
-          })
+            res.json({message: "User logged in",
+              token: token
+            })
           
-        }else{
-          res.json({
-            message: "User not logged in (wrong password)"
-          })
+        }
+        else
+        {
+          res.json({message: "User not logged in (wrong password)"})
         }
       }
     }
   )
 }
 
-export function isAdmin(req){
-  if(req.user==null){
-    return false
-  }
+export function isAdmin(req)
+{
+  if(req.user==null)
+  {return false}
 
-  if(req.user.type != "admin"){
-    return false
-  }
-
+  if(req.user.type != "admin")
+  {return false}
   return true
 }
 
-export function isCustomer(req){
-  if(req.user==null){
+export function isCustomer(req)
+{
+  if(req.user==null)
+  {
     return false
   }
 
-  if(req.user.type != "customer"){
+  if(req.user.type != "customer")
+  {
     return false
   }
-
   return true
 }
 
 export function getUser(req, res) {
-  if (!req.user) {
-    return res.status(401).json({ message: "Unauthorized: No user logged in" });
-  }
+  if (!req.user) {return res.status(401).json({ message: "Unauthorized: No user logged in" });}
 
   // Exclude sensitive data from the user object
   const { password, ...safeUserData } = req.user.toObject ? req.user.toObject() : req.user;
-
   res.status(200).json(safeUserData);
-
   console.log(req.user)
 }
-
-
-
-
-
-
 
 export function getAllUsers(req, res) {
   // Check if the requester has admin privileges
