@@ -43,6 +43,7 @@ export async function createOrder(req,res)
           paymentId : newOrderData.paymentId,
           notes : newOrderData.notes,
           status : newOrderData.status
+     
         }
       }
       console.log(newProductArray) 
@@ -52,8 +53,8 @@ export async function createOrder(req,res)
 
       const order = new Order(newOrderData)
       await order.save()
-      res.json({
-      message: "Order created"
+      res.json({message: "Order created"
+
     })
     }catch(error){res.status(500).json({message: error.message })
       console.log(error)  //send error to CONSOLE
