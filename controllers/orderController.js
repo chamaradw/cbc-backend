@@ -12,12 +12,6 @@ export async function createOrder(req,res)
         if(latestOrder.length == 0){orderId = "CBC1001"}
         else
         {
-          // const currentOrderId = latestOrder[0].orderId //get current order id
-          // const numberString =  currentOrderId.replace("CBC","") // removing CBC from order id
-          // const number = parseInt(numberString)  // passing number string to integer
-          // const newNumber = (number + 1).toString().padStart(4, "0"); // increamnt order id by 1 and padding with 0
-          // orderId = "CBC" + newNumber // create new order id
-
           const currentOrderId = latestOrder[0].orderId;
           const number = parseInt(currentOrderId.replace("CBC", ""));
           orderId = "CBC" + (number + 1).toString().padStart(4, "0");
@@ -26,70 +20,36 @@ export async function createOrder(req,res)
         if (!newOrderData.orderedItems || newOrderData.orderedItems.length === 0) {
           return res.status(400).json({ message: "No ordered items provided" });
         }
-    
-      //   const products = await Promise.all(
-      //     newOrderData.orderedItems.map(async (item) => {
-      //       const product = await Product.findOne({ productId: item.productId });
-      //       if (!product) {
-      //         throw new Error(`Product with id ${item.productId} not found`);
-      //       }
-      //       return {
-      //         productID: product.productId,
-      //         name: product.productName,
-      //         price: product.price,
-      //         quantity: item.quantity,
-      //         address: item.address,
-      //         phoneNumber: item.phoneNumber,
-      //         paymentId: item.paymentId,
-      //         notes: item.notes,
-      //         phone: item.phone,
-      //         name: item.name,
-      //         image: item.image,
-      //       };
-      //     })
-      //   );
-    
-      //   newOrderData.orderId = orderId;
-      //   newOrderData.email = req.user.email;
-      //   newOrderData.products = products;
-    
-      //   const order = new Order(newOrderData);
-      //   await order.save();
-    
-      //   res.json({ message: "Order created" });
-      // } catch (error) {
-      //   console.error("Error creating order:", error);
-      //   res.status(500).json({ message: error.message });
-          
-     // const newOrderData = req.body
-      const newProductArray = []
+      const newProductArray = []  
       for(let i=0;i<newOrderData.orderedItems.length;i++)
       {
-        const product =  await Product.findOne({productId:newOrderData.orderedItems[i].productId,})
-        if(Product == null)
+        const product=  await Product.findOne({productId:newOrderData.orderedItems[i].productId,})
+        //console.log(product)
+        if(product == null)
           {
-            res.json({message: "Product with id " + newOrderData.orderedItems[i].productId+" not found"})
-            return
+            res.json({message: "Product with id " + newOrderData.orderedItems[i].productId +" not found"})
+            return 
           }
-        newProductArray[i] = 
+        
+        newProductArray[i] =
         {
-         
-          name : Product.productName,
-          price : Product.price,
-          //images : Product.images[0],
+          productName : product.productName,
+          altNames : product.altNames,
           quantity : newOrderData.orderedItems[i].quantity,
-          address: newOrderData.orderedItems[i].address,
-          phoneNumber: newOrderData.orderedItems[i].phoneNumber,
-          paymentId: newOrderData.orderedItems[i].paymentId,
-          notes: newOrderData.orderedItems[i].notes,
-          phone: newOrderData.orderedItems[i].phone,
-          name: newOrderData.orderedItems[i].name,
-          image: newOrderData.orderedItems[i].image,
+          price : product.price,
+          images : product.images[0],
+          custName : newOrderData.custName,
+          custAddress : newOrderData.custAddress,
+          paymentId : newOrderData.paymentId,
+          notes : newOrderData.notes,
+          status : newOrderData.status
         }
       }
       console.log(newProductArray) 
+      newOrderData.orderedItems = newProductArray
       newOrderData.orderId = orderId
-      newOrderData.email = req.user.email   
+      newOrderData.email = req.user.email 
+
       const order = new Order(newOrderData)
       await order.save()
       res.json({
