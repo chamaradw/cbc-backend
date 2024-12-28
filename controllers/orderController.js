@@ -21,28 +21,37 @@ export async function createOrder(req,res)
           return res.status(400).json({ message: "No ordered items provided" });
         }
       const newProductArray = []  
+      let missingProducts = [];
+
       for(let i=0;i<newOrderData.orderedItems.length;i++)
-      {
+       {
+        const productId = newOrderData.orderedItems[i].productId;
         const product=  await Product.findOne({productId:newOrderData.orderedItems[i].productId,})
-        //console.log(product)
+        console.log(product)
+        if (!product) 
+          {
+            missingProducts.push(productId);
+          }
         if(product == null)
           {
-            res.json({message: "Product with id " + newOrderData.orderedItems[i].productId +" not found"})
+            res.json({message: "Product with ids " + newOrderData.orderedItems[i].productId +" are not found"})
             return 
           }
-        
         newProductArray[i] =
         {
           productName : product.productName,
           altNames : product.altNames,
           quantity : newOrderData.orderedItems[i].quantity,
           price : product.price,
+          lastPrice : product.lastPrice,
+          stock : product.stock,
+          description : product.description,
           images : product.images[0],
           custName : newOrderData.custName,
           custAddress : newOrderData.custAddress,
           paymentId : newOrderData.paymentId,
           notes : newOrderData.notes,
-          status : newOrderData.status
+          status : newOrderData.status,
      
         }
       }
