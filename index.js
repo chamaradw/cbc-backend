@@ -6,6 +6,7 @@ import userRouter from './routes/userRouter.js';
 import orderRoutes from './routes/orderRouter.js';
 import dotenv from 'dotenv';
 import jwt from "jsonwebtoken";
+import cors   from "cors";
 
 dotenv.config()
 
@@ -32,6 +33,7 @@ app.use(
     next()
   }
 )
+app.use(cors())
 app.use("/api/products",productRouter)
 app.use("/api/users",userRouter)
 app.use("/api/orders",orderRoutes)
