@@ -62,10 +62,18 @@ export function loginUser(req,res){
               profilePicture : user.profilePicture
             },process.env.SECRET)
           
-            res.json({message: "User logged in",
-              token: token
+            res.json({message: "Successfuly logged in to backend",
+              token: token,
+              user : {
+                firstName : user.firstName,
+                lastName : user.lastName,
+                type : user.type,
+                profilePicture : user.profilePicture,
+                email : user.email
+              
+              }
             })
-          
+            
         }
         else
         {

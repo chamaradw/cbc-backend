@@ -30,8 +30,12 @@ export function createProduct(req,res){
 export function getProducts(req, res) {
   Product.find({})
     .then((products) => {
-      res.json(products); // Send the product list as a response
-      console.log(products)
+      if (products.length === 0) {
+        res.json({ message: 'No products found.' }); // Message if no products are available
+      } else {
+        res.json(products); // Send the product list as a response
+      }
+      console.log('End of file: All products retrieved and sent.'); // Indicate completion
     })
     .catch((error) => {
       console.error(error); // Log the error for debugging
