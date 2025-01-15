@@ -1,128 +1,98 @@
-import Product  from "../models/product.js";
+import Product from "../models/product.js";
 import { isAdmin } from "./userController.js";
 
-export function createProduct(req,res){
-
-
-  // check if user is admin to crate products
-  if(!isAdmin(req)){
-    res.json({
-      message: "Please login as administrator to add products"
-    })
-    return
-  }
-
-  const newProductData = req.body
-
-  const product = new Product(newProductData)
-
-  product.save().then(()=>{
-    res.json({
-      message: "Product created"
-    })
-  }).catch((error)=>{
-    res.json({
-      message: error //send error to front end
-    })
-  })
-}
-
-export function getProducts(req, res) {
-  Product.find({})
-    .then((products) => {
-      if (products.length === 0) {
-        res.json({ message: 'No products found.' }); // Message if no products are available
-      } else {
-        res.json(products); // Send the product list as a response
-      }
-      console.log('End of file: All products retrieved and sent.'); // Indicate completion
-    })
-    .catch((error) => {
-      console.error(error); // Log the error for debugging
-      res.status(500).json({ message: 'Internal Server Error' }); // Send a 500 status code with an error message
-    });
-}
-
-
-// Update product function
-export function updateProduct(req, res) {
-  // Check if user is admin to update products
+export async function createProduct(req, res) {
   if (!isAdmin(req)) {
-    res.json({
-      message: "Please login as administrator to update products"
-    });
+    res.status(401).json({ message: "Please login as an administrator to add products" });
     return;
   }
 
-  const { productId } = req.params; // Assuming productId is passed as a URL parameter
-  const updatedProductData = req.body;
+  const newProductData = req.body;
 
-  Product.findOneAndUpdate({ productId }, updatedProductData, { new: true, runValidators: true })
-    .then((updatedProduct) => {
-      if (!updatedProduct) {
-        res.status(404).json({
-          message: "Product not found"
-        });
-        return;
-      }
-      res.json({
-        message: "Product updated",
-        product: updatedProduct
-      });
-    })
-    .catch((error) => {
-      res.status(400).json({
-        message: error // Send error to front end
-      });
-    });
-}
-
-// Delete product function
-export function deleteProduct(req, res) {
-  // Check if user is admin to delete products
-  if (!isAdmin(req)) {
-    res.json({
-      message: "Please login as administrator to delete products"
-    });
-    return;
-  }
-
-  const { productId } = req.params; // Assuming productId is passed as a URL parameter
-
-  Product.findOneAndDelete({ productId })
-    .then((deletedProduct) => {
-      if (!deletedProduct) {
-        res.status(404).json({
-          message: "Product not found"
-        });
-        return;
-      }
-      res.json({
-        message: "Product deleted",
-        product: deletedProduct
-      });
-    })
-    .catch((error) => {
-      res.status(400).json({
-        message: error // Send error to front end
-      });
-    });
-}
-
-export async function getProductById(req, res) {    
-  const { productId } = req.params; // Assuming productId is passed as a URL parameter
   try {
-    const product = await Product.findOne({ productId });
-    if (!product) {
-      res.status(404).json({
-        message: "Product not found"
-      });
+    const product = new Product(newProductData);
+    await product.save();
+    res.status(201).json({ message: "Product created", product });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+}
+
+export async function getProducts(req, res) {
+  try {
+    const products = await Product.find({});
+    if (products.length === 0) {
+      res.status(404).json({ message: "No products found." });
       return;
     }
-    res.json(product);
+    res.status(200).json(products);
   } catch (error) {
-    res.status(500).json({
-      message: error // Send error to front end
-    });
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-} 
+}
+
+export async function updateProduct(req, res) {
+  if (!isAdmin(req)) {
+    res.status(401).json({ message: "Please login as an administrator to update products" });
+    return;
+  }
+
+  const { productId } = req.params;
+  const updatedProductData = req.body;
+
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(productId, updatedProductData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedProduct) {
+      res.status(404).json({ message: "Product not found" });
+      return;
+    }
+
+    res.status(200).json({ message: "Product updated", product: updatedProduct });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+}
+
+export async function deleteProduct(req, res) {
+  if (!isAdmin(req)) {
+    res.status(403).json({ message: "Please login as an administrator to delete products" });
+    return;
+  }
+
+  const { productId } = req.params;
+
+  try {
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+
+    if (!deletedProduct) {
+      res.status(404).json({ message: "Product not found" });
+      return;
+    }
+
+    res.status(200).json({ message: "Product deleted", product: deletedProduct });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+}
+
+export async function getProductsById(req, res) {
+  const { productId } = req.params;
+
+  try {
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      res.status(404).json({ message: "Product not found" });
+      return;
+    }
+
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}

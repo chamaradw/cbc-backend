@@ -6,7 +6,7 @@ const productRouter = express.Router();
 productRouter.post("/",createProduct)
 productRouter.get("/",getProducts)
 productRouter.get("/:productId",getProductsById)
-productRouter.put("/",updateProduct)
+productRouter.put("/:productId",updateProduct)
 productRouter.delete("/",deleteProduct)
 
 export default productRouter; 
