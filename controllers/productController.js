@@ -109,3 +109,20 @@ export function deleteProduct(req, res) {
     });
 }
 
+export async function getProductById(req, res) {    
+  const { productId } = req.params; // Assuming productId is passed as a URL parameter
+  try {
+    const product = await Product.findOne({ productId });
+    if (!product) {
+      res.status(404).json({
+        message: "Product not found"
+      });
+      return;
+    }
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({
+      message: error // Send error to front end
+    });
+  }
+} 
