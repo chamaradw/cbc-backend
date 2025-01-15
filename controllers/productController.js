@@ -32,6 +32,32 @@ export async function getProducts(req, res) {
   }
 }
 
+// export async function updateProduct(req, res) {
+//   if (!isAdmin(req)) {
+//     res.status(401).json({ message: "Please login as an administrator to update products" });
+//     return;
+//   }
+
+//   const { productId } = req.params;
+//   const updatedProductData = req.body;
+
+//   try {
+//     const updatedProduct = await Product.findByIdAndUpdate(productId, updatedProductData, {
+//       new: true,
+//       runValidators: true,
+//     });
+
+//     if (!updatedProduct) {
+//       res.status(404).json({ message: "Product not found" });
+//       return;
+//     }
+
+//     res.status(200).json({ message: "Product updated", product: updatedProduct });
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// }
+
 export async function updateProduct(req, res) {
   if (!isAdmin(req)) {
     res.status(401).json({ message: "Please login as an administrator to update products" });
@@ -42,7 +68,7 @@ export async function updateProduct(req, res) {
   const updatedProductData = req.body;
 
   try {
-    const updatedProduct = await Product.findByIdAndUpdate(productId, updatedProductData, {
+    const updatedProduct = await Product.findOneAndUpdate({ productId }, updatedProductData, {
       new: true,
       runValidators: true,
     });
@@ -57,6 +83,7 @@ export async function updateProduct(req, res) {
     res.status(400).json({ message: error.message });
   }
 }
+
 
 export async function deleteProduct(req, res) {
   if (!isAdmin(req)) {
