@@ -80,11 +80,13 @@ export async function deleteProduct(req, res) {
   }
 }
 
+
 export async function getProductsById(req, res) {
   const { productId } = req.params;
 
   try {
-    const product = await Product.findById(productId);
+    // Corrected query: pass an object with the field to match
+    const product = await Product.findOne({ productId });
 
     if (!product) {
       res.status(404).json({ message: "Product not found" });
@@ -93,6 +95,7 @@ export async function getProductsById(req, res) {
 
     res.status(200).json(product);
   } catch (error) {
+    console.error('Error fetching product:', error);
     res.status(500).json({ message: error.message });
   }
 }
