@@ -41,11 +41,8 @@ export async function createOrder(req,res)
         {
           productName : product.productName,
           altNames : product.altNames,
-          quantity : newOrderData.orderedItems[i].quantity,
-          price : product.price,
-          lastPrice : product.lastPrice,
-          stock : product.stock,
-          description : product.description,
+          quantity : newOrderData.orderedItems[i].qty,
+          price : product.lastprice,
           images : product.images[0],
           custName : newOrderData.custName,
           custAddress : newOrderData.custAddress,
@@ -86,3 +83,57 @@ export async function getOrders(req, res) {
     res.status(500).json({ message: error.message });
   }
 }
+
+export async function getQuote(req, res) {
+  
+  try {
+    const newOrderData = req.body;
+    const newProductArray = [];
+    let total = 0;
+    let labeledTotal = 0;
+    console.log(req.body)
+    for (let i = 0; i < newOrderData.orderedItems.length; i++) {
+      const product = await Product.findOne({
+        productId: newOrderData.orderedItems[i].productId,
+      });
+      if (product == null) {
+        res.json({
+          message:
+            "Product with id " +
+            newOrderData.orderedItems[i].productId +
+            " not found",
+        });
+        return;
+      }
+      labeledTotal += product.price * newOrderData.orderedItems[i].qty;
+      total += product.lastPrice * newOrderData.orderedItems[i].qty;
+      newProductArray[i] = {
+        name: product.productName,
+        price: product.lastPrice,
+        labeledPrice: product.price,
+        quantity: newOrderData.orderedItems[i].qty,
+        image: product.images[0],
+      };
+    }
+    console.log(newProductArray);
+    newOrderData.orderedItems = newProductArray;
+    newOrderData.total = total;
+    res.json({
+      orderedItems: newProductArray,
+      total: total,
+      labeledTotal: labeledTotal,
+    });
+    res.json({
+      orderedItems: newProductArray,
+      total: total,
+      labeledTotal: labeledTotal,
+    });
+  } catch (error) 
+    {
+      res.status(500).json({
+      message: error.message
+    })
+   
+  }
+}
+
