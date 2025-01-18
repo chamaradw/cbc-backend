@@ -93,22 +93,32 @@ export async function createOrder(req, res) {
 
 export async function getOrders(req, res) {
   try {
+    // Check if the user is authenticated
     if (!req.user || !req.user.email) {
       return res.status(401).json({ message: "Unauthorized access!! Please login as a customer to view orders" });
-    }else if 
-    (isAdmin(req)) {const orders = await Order.find(); res.json(orders);}
-    
-    else  (!isCustomer  (req))
-    {
-    const orders = await Order.find({ email: req.user.email });
-    res.json(orders);
-    return;
     }
+
+    // If the user is an admin, return all orders
+    if (isAdmin(req)) {
+      const orders = await Order.find();
+      return res.json(orders);  // return here to avoid continuing after the response
+    }
+
+    // If the user is a customer, return their specific orders
+    if (isCustomer(req)) {
+      const orders = await Order.find({ email: req.user.email });
+      return res.json(orders);  // return here to prevent further code execution
+    }
+
+    // If the user is neither admin nor customer, return an error
+    return res.status(400).json({ message: "Invalid user role" });
+
   } catch (error) {
     console.error("Error fetching orders:", error);
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 }
+
 
 export async function getQuote(req, res) {
   try {
@@ -141,6 +151,7 @@ export async function getQuote(req, res) {
         labeledPrice: product.price,
         quantity: item.qty,
         image: product.images[0],
+        
       });
     }
 
