@@ -1,6 +1,6 @@
 import Order from "../models/order.js";
 import Product from "../models/product.js";
-import { isCustomer } from "./userController.js";
+import { isAdmin, isCustomer } from "./userController.js";
 
 export async function createOrder(req, res) {
   try {
@@ -94,11 +94,16 @@ export async function createOrder(req, res) {
 export async function getOrders(req, res) {
   try {
     if (!req.user || !req.user.email) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
+      return res.status(401).json({ message: "Unauthorized access!! Please login as a customer to view orders" });
+    }else if 
+    (isAdmin(req)) {const orders = await Order.find(); res.json(orders);}
+    
+    else  (!isCustomer  (req))
+    {
     const orders = await Order.find({ email: req.user.email });
     res.json(orders);
+    return;
+    }
   } catch (error) {
     console.error("Error fetching orders:", error);
     res.status(500).json({ message: error.message });
