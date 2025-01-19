@@ -112,24 +112,35 @@ export async function deleteOrder(req, res) {
     const { orderId } = req.params;
 
     if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized: Please login to delete orders." });
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: Please login to delete orders." });
     }
 
-    const order = await Order.findOne({ orderId });
+    console.log("User making the request:", req.user);
 
+    const order = await Order.findOne({ orderId });
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    // Check if the user is authorized to delete the order
-    if (order.email !== req.user.email && !isAdmin(req)) {
-      return res.status(403).json({ message: "Forbidden: You are not authorized to delete this order" });
+    console.log("Order email:", order.email);
+    console.log("Is user an admin:", req.user.isAdmin);
+
+    if (order.email !== req.user.email && !req.user.isAdmin) {
+      return res
+        .status(403)
+        .json({ message: "Forbidden: You are not authorized to delete this order" });
     }
+    console.log("User making the request:", req.user);
+    console.log("Order email:", order.email);
+    console.log("Is user an admin:", req.user.isAdmin);
 
     await Order.deleteOne({ orderId });
     res.json({ message: "Order deleted successfully" });
   } catch (error) {
     console.error("Error deleting order:", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 }
+
