@@ -2,44 +2,41 @@ import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+
+
+
+
 dotenv.config()
-export function createUser(req,res){
+export function createUser(req, res) {
+  const newUserData = req.body;
 
-  const newUserData = req.body
-
-  if(newUserData.type == "admin"){
-
-    if(req.user==null){
-      res.json({
-        message: "Please login as administrator to create admin accounts"
-      })
-      return
+  if (newUserData.type === "admin") {
+    if (!req.user || req.user.type !== "admin") {
+      return res.status(403).json({
+        message: "Forbidden: Only administrators can create admin accounts",
+      });
     }
-
-    if(req.user.type != "admin"){
-      res.json({
-        message: "Please login as administrator to create admin accounts"
-      })
-      return
-    }
-
   }
 
-  newUserData.password = bcrypt.hashSync(newUserData.password, 10)  
+  newUserData.password = bcrypt.hashSync(newUserData.password, 10);
 
-  const user = new User(newUserData)
+  const user = new User(newUserData);
 
-  user.save().then(()=>{
-    res.json({
-      message: "User created"
+  user
+    .save()
+    .then(() => {
+      res.status(201).json({ success: true, message: "User created successfully" });
     })
-  }).catch((error)=>{
-    res.json({      
-      message: "User not created"
-    })
-  })
-  
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: "User not created",
+        error: error.message,
+      });
+    });
 }
+
 
 export function loginUser(req,res){
 
@@ -117,30 +114,29 @@ export function getUser(req, res) {
   console.log(req.user)
 }
 
+
+
 export function getAllUsers(req, res) {
-  // Check if the requester has admin privileges
   if (!req.user || req.user.type !== "admin") {
     return res.status(403).json({ message: "Forbidden: Admin access required" });
   }
 
   User.find()
     .then((users) => {
-      // Exclude sensitive fields like passwords
       const sanitizedUsers = users.map((user) => {
         const { password, ...safeUserData } = user.toObject();
         return safeUserData;
       });
-
-      res.status(200).json(sanitizedUsers);
+      res.status(200).json({ success: true, data: sanitizedUsers });
     })
     .catch((error) => {
+      console.error(error);
       res.status(500).json({
+        success: false,
         message: "Error retrieving users",
         error: error.message,
       });
-     
     });
-    console.error(error);
 }
 
 
