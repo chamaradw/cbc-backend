@@ -130,7 +130,7 @@ export function getAllUsers(req, res) {
       res.status(200).json({ success: true, data: sanitizedUsers });
     })
     .catch((error) => {
-      console.error(error);
+      console.error("Error retrieving users:", error);
       res.status(500).json({
         success: false,
         message: "Error retrieving users",
