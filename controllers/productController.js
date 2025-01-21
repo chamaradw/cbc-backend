@@ -1,5 +1,6 @@
 import Product from "../models/product.js";
 import { isAdmin } from "./userController.js";
+import mongoose from 'mongoose';
 
 export async function createProduct(req, res) {
   if (!isAdmin(req)) {
@@ -58,25 +59,30 @@ export async function updateProduct(req, res) {
 }
 
 
+
 export async function deleteProduct(req, res) {
   if (!isAdmin(req)) {
-    res.status(403).json({ message: "Please login as an administrator to delete products" });
-    return;
+    return res.status(403).json({ message: "Please login as an administrator to delete products" });
   }
 
   const { productId } = req.params;
+
+  // Validate the productId as a valid MongoDB ObjectId
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(400).json({ message: "Invalid Product ID" });
+  }
 
   try {
     const deletedProduct = await Product.findByIdAndDelete(productId);
 
     if (!deletedProduct) {
-      res.status(404).json({ message: "Product not found" });
-      return;
+      return res.status(404).json({ message: "Product not found" });
     }
 
     res.status(200).json({ message: "Product deleted", product: deletedProduct });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Error deleting product:", error);
+    res.status(500).json({ message: "Server error" });
   }
 }
 
