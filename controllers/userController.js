@@ -114,7 +114,7 @@ export async function getAllUsers(req, res) {
   }
 }
 
-// DELETE User function
+
 // DELETE User function
 export async function deleteUser(req, res) {
   const userId = req.params.id;
