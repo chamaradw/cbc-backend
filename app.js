@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const loginLogRoutes = require('./routes/loginLogRoutes');
+const userRoutes = require('./controllers/userController.js');
 
 const app = express();
 
@@ -17,10 +17,10 @@ mongoose
   .catch((err) => console.error('MongoDB connection error:', err));
 
 // Routes
-app.use('/api/users', loginLogRoutes);
+app.use('/api', userRoutes); // Mounting the user routes under /api
 
 // Start Server
-const PORT = 5000;
+const PORT = process.env.PORT || 5000; // Use environment variable for portability
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
