@@ -4,10 +4,10 @@ import { authenticate } from "../middleware/authenticate.js";
 
 const userRouter = express.Router();
 
-userRouter.post("/createUser", authenticate, createUser); // Requires authentication
-userRouter.post("/login", loginUser);                     // Public route
-userRouter.get("/", authenticate, getUser);               // Requires authentication
-userRouter.get("/all", authenticate, getAllUsers);        // Requires authentication
+userRouter.post("/createUser", createUser) 
+userRouter.post("/login", loginUser);                     
+userRouter.get("/", authenticate, getUser);               
+userRouter.get("/all", authenticate, getAllUsers);        
 userRouter.delete("/:id", authenticate, deleteUser);
 
 

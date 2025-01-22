@@ -1,8 +1,7 @@
-import User from "../models/user.js";  // Assuming you have a User model
+import User from "../models/user.js";  
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-
 
 dotenv.config();
 
@@ -11,27 +10,32 @@ export async function createUser(req, res) {
   const newUserData = req.body;
 
   if (newUserData.type === "admin") {
-    if (!req.user || req.user.type !== "admin") {
+    if (req.user == null) {
+      return res.status(401).json({
+        message: "Please login as administrator to create admin accounts"
+      });
+    }
+
+    if (req.user.type !== "admin") {
       return res.status(403).json({
-        message: "Forbidden: Only administrators can create admin accounts",
+        message: "Please login as administrator to create admin accounts"
       });
     }
   }
 
   try {
-    // Hash password before saving
-    newUserData.password = bcrypt.hashSync(newUserData.password, 10);
-
+    newUserData.password = await bcrypt.hash(newUserData.password, 10);  // Use async bcrypt.hash
     const user = new User(newUserData);
 
     await user.save();
-    res.status(201).json({ success: true, message: "User created successfully" });
+    return res.status(201).json({
+      message: "User created successfully"
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
+    console.error("Error creating user:", error);
+    return res.status(500).json({
       message: "User not created",
-      error: error.message,
+      error: error.message
     });
   }
 }
@@ -45,7 +49,7 @@ export async function loginUser(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const isPasswordCorrect = bcrypt.compareSync(req.body.password, user.password);
+    const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);  // Use async bcrypt.compare
     if (isPasswordCorrect) {
       const token = jwt.sign(
         {
@@ -57,7 +61,7 @@ export async function loginUser(req, res) {
           profilePicture: user.profilePicture,
         },
         process.env.SECRET,
-        { expiresIn: '1h' }  // You can set a token expiration
+        { expiresIn: '1h' }
       );
 
       return res.json({
@@ -88,7 +92,7 @@ export function getUser(req, res) {
 
   // Exclude sensitive data like password
   const { password, ...safeUserData } = req.user.toObject ? req.user.toObject() : req.user;
-  res.status(200).json(safeUserData);
+  return res.status(200).json(safeUserData);
 }
 
 // Get All Users
@@ -103,17 +107,16 @@ export async function getAllUsers(req, res) {
       const { password, ...safeUserData } = user.toObject();
       return safeUserData;
     });
-    res.status(200).json({ success: true, data: sanitizedUsers });
+    return res.status(200).json({ success: true, data: sanitizedUsers });
   } catch (error) {
     console.error("Error retrieving users:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Error retrieving users",
       error: error.message,
     });
   }
 }
-
 
 // DELETE User function
 export async function deleteUser(req, res) {
@@ -131,32 +134,27 @@ export async function deleteUser(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json({ message: "User deleted successfully" });
+    return res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     console.error("Error deleting user:", error);
-    res.status(500).json({ message: "Internal server error", error: error.message });
+    return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 }
-export function isAdmin(req){
-  if(req.user==null){
-    return false
-  }
 
-  if(req.user.type != "admin"){
-    return false
+export function isAdmin(req) {
+  if (req.user == null || req.user.type !== "admin") {
+    return false;
   }
-
-  return true
+  return true;
 }
 
-export function isCustomer(req){
-  if(req.user==null){
-    return false
+export function isCustomer(req) {
+  if (req.user == null || req.user.type !== "customer") {
+    return false;
   }
-
-  if(req.user.type != "customer"){
-    return false
-  }
-
-  return true
+  return true;
 }
+
+
+
+
