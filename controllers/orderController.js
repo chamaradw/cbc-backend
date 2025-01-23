@@ -93,7 +93,7 @@ export async function getQuote(req, res) {
 
       newProductArray.push({
         name: product.productName,
-        price: product.lastPrice,
+        price: product.lastPrice,//last price is the current price of the product
         labeledPrice: product.price,
         quantity: item.qty,
         image: product.images[0],
