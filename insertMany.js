@@ -1,117 +1,110 @@
-import express from 'express';
-import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import productRouter from './routes/productRouter.js';
-import userRouter from './routes/userRouter.js';
-import orderRoutes from './routes/orderRouter.js';
-import dotenv from 'dotenv';
-import jwt from "jsonwebtoken";
-import cors   from "cors";
-
 
 // Your product data (JSON)
-const products = [
-  {
-    "productId": "SLB001",
-    "productName": "Ceylon Herbal Face Pack",
-    "altNames": ["Ayurvedic Face Mask"],
-    "images": ["https://example.com/images/face-pack-1.jpg"],
-    "price": 1200,
-    "lastPrice": 1500,
-    "stock": 50,
-    "description": "A natural face pack made with authentic Sri Lankan herbs for radiant skin."
-  },
-  {
-    "productId": "SLB002",
-    "productName": "Coconut Oil Hair Serum",
-    "altNames": ["Organic Hair Oil"],
-    "images": ["https://example.com/images/hair-serum-1.jpg"],
-    "price": 850,
-    "lastPrice": 1000,
-    "stock": 100,
-    "description": "Pure coconut oil-based hair serum for strong and shiny hair."
-  },
-  {
-    "productId": "SLB003",
-    "productName": "Kasturi Turmeric Cream",
-    "altNames": ["Turmeric Brightening Cream"],
-    "images": ["https://example.com/images/turmeric-cream.jpg"],
-    "price": 950,
-    "lastPrice": 1100,
-    "stock": 75,
-    "description": "A natural cream enriched with Sri Lankan Kasturi turmeric to brighten and nourish skin."
-  },
-  {
-    "productId": "SLB004",
-    "productName": "Sandalwood Face Mist",
-    "altNames": ["Refreshing Mist"],
-    "images": ["https://example.com/images/face-mist.jpg"],
-    "price": 700,
-    "lastPrice": 850,
-    "stock": 60,
-    "description": "A rejuvenating face mist made with sandalwood extracts from Sri Lanka."
-  },
-  {
-    "productId": "SLB005",
-    "productName": "Tea Tree Acne Gel",
-    "altNames": ["Anti-Acne Gel"],
-    "images": ["https://example.com/images/acne-gel.jpg"],
-    "price": 1100,
-    "lastPrice": 1300,
-    "stock": 40,
-    "description": "Tea tree oil-based gel for effective acne treatment."
-  },
-  {
-    "productId": "SLB006",
-    "productName": "Cinnamon Lip Balm",
-    "altNames": ["Herbal Lip Balm"],
-    "images": ["https://example.com/images/lip-balm.jpg"],
-    "price": 450,
-    "lastPrice": 550,
-    "stock": 200,
-    "description": "Natural lip balm made with Sri Lankan cinnamon for smooth lips."
-  },
-  {
-    "productId": "SLB007",
-    "productName": "Ceylon Neem Soap",
-    "altNames": ["Herbal Neem Soap"],
-    "images": ["https://example.com/images/neem-soap.jpg"],
-    "price": 300,
-    "lastPrice": 400,
-    "stock": 150,
-    "description": "Handmade soap with neem extracts for gentle cleansing."
-  },
-  {
-    "productId": "SLB008",
-    "productName": "Gotukola Face Serum",
-    "altNames": ["Centella Asiatica Serum"],
-    "images": ["https://example.com/images/face-serum.jpg"],
-    "price": 1400,
-    "lastPrice": 1700,
-    "stock": 30,
-    "description": "Anti-aging serum with Gotukola (Centella Asiatica) extracts."
-  },
-  {
-    "productId": "SLB009",
-    "productName": "Pandanus Hair Oil",
-    "altNames": ["Rampa Hair Oil"],
-    "images": ["https://example.com/images/hair-oil.jpg"],
-    "price": 800,
-    "lastPrice": 1000,
-    "stock": 80,
-    "description": "Nourishing hair oil made with Pandanus (Rampa) leaves."
-  },
-  {
-    "productId": "SLB010",
-    "productName": "Aloe Vera Gel",
-    "altNames": ["Hydrating Gel"],
-    "images": ["https://example.com/images/aloe-gel.jpg"],
-    "price": 600,
-    "lastPrice": 750,
-    "stock": 120,
-    "description": "Multi-purpose aloe vera gel for hydration and skin soothing."
-  }
-];
+const products = 
+  [
+    {
+      "productId": "BC001",
+      "productName": "Ceylon Green Tea Body Lotion",
+      "altNames": ["Ceylon Tea Body Lotion"],
+      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/ceylon-green-tea-body-lotion.jpg"],
+      "price": 2190.00,
+      "lastPrice": 2190.00,
+      "stock": 50,
+      "description": "A luxurious body lotion infused with Ceylon green tea, known for its antioxidant properties, leaving your skin soft and rejuvenated."
+    },
+    {
+      "productId": "BC002",
+      "productName": "Coconut Milk Body Lotion",
+      "altNames": ["Coconut Body Lotion"],
+      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/coconut-milk-body-lotion.jpg"],
+      "price": 2190.00,
+      "lastPrice": 2190.00,
+      "stock": 50,
+      "description": "Nourish your skin with this rich body lotion made from pure coconut milk, providing deep hydration and a tropical scent."
+    },
+    {
+      "productId": "BC003",
+      "productName": "Foot Repair Cream",
+      "altNames": ["Foot Cream"],
+      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/foot-repair-cream.jpg"],
+      "price": 880.00,
+      "lastPrice": 880.00,
+      "stock": 50,
+      "description": "A soothing cream designed to repair and soften dry, cracked feet, leaving them smooth and comfortable."
+    },
+    {
+      "productId": "BC004",
+      "productName": "Fresh Relaxing Body Lotion for All Skin Types",
+      "altNames": ["Relaxing Body Lotion"],
+      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/fresh-relaxing-body-lotion.jpg"],
+      "price": 690.00,
+      "lastPrice": 690.00,
+      "stock": 50,
+      "description": "A versatile body lotion suitable for all skin types, offering a fresh and relaxing fragrance while moisturizing the skin."
+    },
+    {
+      "productId": "BC005",
+      "productName": "Fresh Relaxing Body Wash for All Skin Types",
+      "altNames": ["Relaxing Body Wash"],
+      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/fresh-relaxing-body-wash.jpg"],
+      "price": 690.00,
+      "lastPrice": 690.00,
+      "stock": 50,
+      "description": "Cleanse and refresh your skin with this gentle body wash, ideal for all skin types, leaving a relaxing scent."
+    },
+    {
+      "productId": "BC006",
+      "productName": "Brightening Gold Facial Serum",
+      "altNames": ["Gold Facial Serum"],
+      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/brightening-gold-facial-serum.jpg"],
+      "price": 3190.00,
+      "lastPrice": 3190.00,
+      "stock": 50,
+      "description": "An advanced serum enriched with gold particles, designed to brighten and rejuvenate the skin, promoting a radiant complexion."
+    },
+    {
+      "productId": "BC007",
+      "productName": "Cell-Renew Gold Cleanser",
+      "altNames": ["Gold Cleanser"],
+      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/cell-renew-gold-cleanser.jpg"],
+      "price": 1240.00,
+      "lastPrice": 1240.00,
+      "stock": 50,
+      "description": "A luxurious cleanser infused with gold, effectively removing impurities and promoting skin renewal for a fresh appearance."
+    },
+    {
+      "productId": "BC008",
+      "productName": "Illuminate Gold Eye Treatment Gel",
+      "altNames": ["Gold Eye Gel"],
+      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/illuminate-gold-eye-treatment-gel.jpg"],
+      "price": 3190.00,
+      "lastPrice": 3190.00,
+      "stock": 50,
+      "description": "A revitalizing eye gel with gold extracts, targeting dark circles and puffiness, leaving the eye area refreshed and luminous."
+    },
+    {
+      "productId": "BC009",
+      "productName": "Pro-Repair Gold Night Moisturiser",
+      "altNames": ["Gold Night Cream"],
+      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/pro-repair-gold-night-moisturiser.jpg"],
+      "price": 3190.00,
+      "lastPrice": 3190.00,
+      "stock": 50,
+      "description": "A rich night cream infused with gold, designed to repair and nourish the skin overnight, promoting a youthful glow."
+    },
+    {
+      "productId": "BC010",
+      "productName": "Regenerate Gold Facial Mask",
+      "altNames": ["Gold Facial Mask"],
+      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/regenerate-gold-facial-mask.jpg"],
+      "price": 3190.00,
+      "lastPrice": 3190.00,
+      "stock": 50,
+      "description": "A rejuvenating facial mask with gold particles, aimed at regenerating the skin and enhancing its natural radiance."
+    }
+  ];
+  
 
 // Define the Mongoose Product schema
 const productSchema = new mongoose.Schema({
@@ -125,41 +118,22 @@ const productSchema = new mongoose.Schema({
   description: { type: String, required: true }
 });
 
-const Product = mongoose.model('Product2', productSchema);
+const Product = mongoose.model('Product', productSchema);
 
-
-dotenv.config()
-
-const app = express();
-const mongoUrl = process.env.MONGO_DB_URI
-mongoose.connect(mongoUrl,{})
-const connection = mongoose.connection;
-connection.once("open",()=>
-{
-  console.log("Connection to the mongoDB is successfully established. !");
-})
-app.use(bodyParser.json())
-app.use(
-  (req,res,next)=>{
-    const token = req.header("Authorization")?.replace("Bearer ","")
-    console.log(token)
-    if(token != null)
-    {
-      jwt.verify(token,process.env.SECRET , (error,decoded)=>
-      {
-        if(!error){req.user = decoded}
+// Connect to MongoDB (replace with your MongoDB URI)
+mongoose.connect('mongodb+srv://db:801023@cluster0.1tsq9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+  .then(() => {
+    // Insert multiple documents at once
+    Product.insertMany(products)
+      .then((docs) => {
+        console.log('Products inserted successfully:', docs);
+        mongoose.connection.close(); // Close the connection
       })
-    }
-    next()
-  }
-)
-app.use(cors())
-app.use("/api/products",productRouter)
-app.use("/api/users",userRouter)
-app.use("/api/orders",orderRoutes)
-app.listen(
-  5000,
-  ()=>{
-    console.log('Server is running on port 5000');
-  }
-)
+      .catch((error) => {
+        console.error('Error inserting products:', error);
+        mongoose.connection.close(); // Close the connection in case of error
+      });
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error);
+  });
