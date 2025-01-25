@@ -105,3 +105,10 @@ export async function getProductsById(req, res) {
     res.status(500).json({ message: error.message });
   }
 }
+
+
+export async function searchProducts(req, res) {
+  const { query } = req.params.query;
+  const products = await Product.find({ productName: { $regex: query, $options: "i" } });
+  res.status(200).json(products);
+} 

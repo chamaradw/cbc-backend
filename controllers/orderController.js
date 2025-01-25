@@ -144,3 +144,17 @@ export async function deleteOrder(req, res) {
   }
 }
 
+export async function updateOrder(req, res) {
+  try {
+    const { orderId } = req.params;
+    const updatedOrderData = req.body;
+    const updatedOrder = await Order.findOneAndUpdate({ orderId }, updatedOrderData, { new: true });
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.json({ message: "Order updated successfully", order: updatedOrder });
+  } catch (error) {
+    console.error("Error updating order:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
