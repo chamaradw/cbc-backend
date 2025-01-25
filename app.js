@@ -1,15 +1,15 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const userRoutes = require('./controllers/userController.js');
+import express, { json } from 'express';
+import { connect } from 'mongoose';
+import userRoutes from './controllers/userController.js';
 
 const app = express();
 
 // Middleware
-app.use(express.json());
+app.use(json());
+app.use(cors());
 
 // MongoDB Connection
-mongoose
-  .connect('mongodb://localhost:27017/yourDatabaseName', {
+connect('mongodb://localhost:27017/yourDatabaseName', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

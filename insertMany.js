@@ -2,107 +2,137 @@ import mongoose from 'mongoose';
 
 // Your product data (JSON)
 const products = 
-  [
-    {
-      "productId": "BC001",
-      "productName": "Ceylon Green Tea Body Lotion",
-      "altNames": ["Ceylon Tea Body Lotion"],
-      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/ceylon-green-tea-body-lotion.jpg"],
-      "price": 2190.00,
-      "lastPrice": 2190.00,
-      "stock": 50,
-      "description": "A luxurious body lotion infused with Ceylon green tea, known for its antioxidant properties, leaving your skin soft and rejuvenated."
-    },
-    {
-      "productId": "BC002",
-      "productName": "Coconut Milk Body Lotion",
-      "altNames": ["Coconut Body Lotion"],
-      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/coconut-milk-body-lotion.jpg"],
-      "price": 2190.00,
-      "lastPrice": 2190.00,
-      "stock": 50,
-      "description": "Nourish your skin with this rich body lotion made from pure coconut milk, providing deep hydration and a tropical scent."
-    },
-    {
-      "productId": "BC003",
-      "productName": "Foot Repair Cream",
-      "altNames": ["Foot Cream"],
-      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/foot-repair-cream.jpg"],
-      "price": 880.00,
-      "lastPrice": 880.00,
-      "stock": 50,
-      "description": "A soothing cream designed to repair and soften dry, cracked feet, leaving them smooth and comfortable."
-    },
-    {
-      "productId": "BC004",
-      "productName": "Fresh Relaxing Body Lotion for All Skin Types",
-      "altNames": ["Relaxing Body Lotion"],
-      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/fresh-relaxing-body-lotion.jpg"],
-      "price": 690.00,
-      "lastPrice": 690.00,
-      "stock": 50,
-      "description": "A versatile body lotion suitable for all skin types, offering a fresh and relaxing fragrance while moisturizing the skin."
-    },
-    {
-      "productId": "BC005",
-      "productName": "Fresh Relaxing Body Wash for All Skin Types",
-      "altNames": ["Relaxing Body Wash"],
-      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/fresh-relaxing-body-wash.jpg"],
-      "price": 690.00,
-      "lastPrice": 690.00,
-      "stock": 50,
-      "description": "Cleanse and refresh your skin with this gentle body wash, ideal for all skin types, leaving a relaxing scent."
-    },
-    {
-      "productId": "BC006",
-      "productName": "Brightening Gold Facial Serum",
-      "altNames": ["Gold Facial Serum"],
-      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/brightening-gold-facial-serum.jpg"],
-      "price": 3190.00,
-      "lastPrice": 3190.00,
-      "stock": 50,
-      "description": "An advanced serum enriched with gold particles, designed to brighten and rejuvenate the skin, promoting a radiant complexion."
-    },
-    {
-      "productId": "BC007",
-      "productName": "Cell-Renew Gold Cleanser",
-      "altNames": ["Gold Cleanser"],
-      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/cell-renew-gold-cleanser.jpg"],
-      "price": 1240.00,
-      "lastPrice": 1240.00,
-      "stock": 50,
-      "description": "A luxurious cleanser infused with gold, effectively removing impurities and promoting skin renewal for a fresh appearance."
-    },
-    {
-      "productId": "BC008",
-      "productName": "Illuminate Gold Eye Treatment Gel",
-      "altNames": ["Gold Eye Gel"],
-      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/illuminate-gold-eye-treatment-gel.jpg"],
-      "price": 3190.00,
-      "lastPrice": 3190.00,
-      "stock": 50,
-      "description": "A revitalizing eye gel with gold extracts, targeting dark circles and puffiness, leaving the eye area refreshed and luminous."
-    },
-    {
-      "productId": "BC009",
-      "productName": "Pro-Repair Gold Night Moisturiser",
-      "altNames": ["Gold Night Cream"],
-      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/pro-repair-gold-night-moisturiser.jpg"],
-      "price": 3190.00,
-      "lastPrice": 3190.00,
-      "stock": 50,
-      "description": "A rich night cream infused with gold, designed to repair and nourish the skin overnight, promoting a youthful glow."
-    },
-    {
-      "productId": "BC010",
-      "productName": "Regenerate Gold Facial Mask",
-      "altNames": ["Gold Facial Mask"],
-      "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/regenerate-gold-facial-mask.jpg"],
-      "price": 3190.00,
-      "lastPrice": 3190.00,
-      "stock": 50,
-      "description": "A rejuvenating facial mask with gold particles, aimed at regenerating the skin and enhancing its natural radiance."
-    }
+[
+  {
+    "productId": "BC024",
+    "productName": "Herbal Whitening Cream",
+    "altNames": ["Whitening Cream"],
+    "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/herbal-whitening-cream.jpg"],
+    "price": 2300.00,
+    "lastPrice": 2300.00,
+    "stock": 25,
+    "description": "A natural cream formulated with herbal extracts to lighten skin tone and reduce pigmentation."
+  },
+  {
+    "productId": "BC025",
+    "productName": "Aloe Vera Moisturizing Lotion",
+    "altNames": ["Moisturizing Lotion"],
+    "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/aloe-vera-moisturizing-lotion.jpg"],
+    "price": 1500.00,
+    "lastPrice": 1500.00,
+    "stock": 40,
+    "description": "A hydrating lotion enriched with aloe vera to soothe and moisturize dry skin."
+  },
+  {
+    "productId": "BC026",
+    "productName": "Herbal Hair Oil",
+    "altNames": ["Hair Oil"],
+    "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/herbal-hair-oil.jpg"],
+    "price": 1800.00,
+    "lastPrice": 1800.00,
+    "stock": 30,
+    "description": "A nourishing hair oil infused with herbal extracts to strengthen hair and promote growth."
+  },
+  {
+    "productId": "BC027",
+    "productName": "Neem Face Wash",
+    "altNames": ["Face Wash"],
+    "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/neem-face-wash.jpg"],
+    "price": 1200.00,
+    "lastPrice": 1200.00,
+    "stock": 50,
+    "description": "A purifying face wash with neem extracts to cleanse and prevent acne."
+  },
+  {
+    "productId": "BC028",
+    "productName": "Sandalwood Body Scrub",
+    "altNames": ["Body Scrub"],
+    "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/sandalwood-body-scrub.jpg"],
+    "price": 2000.00,
+    "lastPrice": 2000.00,
+    "stock": 35,
+    "description": "An exfoliating body scrub with sandalwood to remove dead skin cells and leave skin smooth."
+  },
+  {
+    "productId": "BC029",
+    "productName": "Herbal Shampoo",
+    "altNames": ["Shampoo"],
+    "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/herbal-shampoo.jpg"],
+    "price": 1600.00,
+    "lastPrice": 1600.00,
+    "stock": 45,
+    "description": "A gentle shampoo infused with herbal ingredients to cleanse and nourish hair."
+  },
+  {
+    "productId": "BC030",
+    "productName": "Coconut Hair Mask",
+    "altNames": ["Hair Mask"],
+    "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/coconut-hair-mask.jpg"],
+    "price": 2200.00,
+    "lastPrice": 2200.00,
+    "stock": 25,
+    "description": "A deep conditioning hair mask with coconut oil to repair and hydrate damaged hair."
+  },
+  {
+    "productId": "BC031",
+    "productName": "Herbal Face Pack",
+    "altNames": ["Face Pack"],
+    "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/herbal-face-pack.jpg"],
+    "price": 1400.00,
+    "lastPrice": 1400.00,
+    "stock": 50,
+    "description": "A revitalizing face pack with herbal extracts to rejuvenate and brighten skin."
+  },
+  {
+    "productId": "BC032",
+    "productName": "Turmeric Face Cream",
+    "altNames": ["Face Cream"],
+    "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/turmeric-face-cream.jpg"],
+    "price": 1700.00,
+    "lastPrice": 1700.00,
+    "stock": 40,
+    "description": "A nourishing face cream with turmeric to even skin tone and reduce blemishes."
+  },
+  {
+    "productId": "BC033",
+    "productName": "Herbal Body Lotion",
+    "altNames": ["Body Lotion"],
+    "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/herbal-body-lotion.jpg"],
+    "price": 1900.00,
+    "lastPrice": 1900.00,
+    "stock": 35,
+    "description": "A moisturizing body lotion enriched with herbal extracts to hydrate and soften skin."
+  },
+  {
+    "productId": "BC034",
+    "productName": "Coconut Lip Balm",
+    "altNames": ["Lip Balm"],
+    "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/coconut-lip-balm.jpg"],
+    "price": 800.00,
+    "lastPrice": 800.00,
+    "stock": 50,
+    "description": "A hydrating lip balm with coconut oil to moisturize and protect lips."
+  },
+  {
+    "productId": "BC035",
+    "productName": "Herbal Foot Cream",
+    "altNames": ["Foot Cream"],
+    "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/herbal-foot-cream.jpg"],
+    "price": 1300.00,
+    "lastPrice": 1300.00,
+    "stock": 40,
+    "description": "A soothing foot cream with herbal extracts to soften and heal cracked heels."
+  },
+  {
+    "productId": "BC036",
+    "productName": "Aloe Vera Gel",
+    "altNames": ["Gel"],
+    "images": ["https://www.britishcosmetics.lk/wp-content/uploads/2023/01/aloe-vera-gel.jpg"],
+    "price": 1000.00,
+    "lastPrice": 1000.00,
+    "stock": 50,
+    "description": "A pure aloe vera gel to soothe and hydrate skin, suitable for all skin types."
+  },
   ];
   
 
