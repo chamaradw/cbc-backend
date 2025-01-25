@@ -1,14 +1,19 @@
 import { Router } from 'express';
-import Wishlist, { findOne } from '../models/Wishlist';
+import mongoose from 'mongoose';
+import Wishlist from '../models/Wishlist.js';
 const router = Router();
 
 // Add product to wishlist
 router.post('/add', async (req, res) => {
   const { userId, product } = req.body;
 
+  if (!userId || !product || !product.productId) {
+    return res.status(400).json({ message: 'Invalid request body' });
+  }
+
   try {
     // Find wishlist by userId
-    let wishlist = await findOne({ userId });
+    let wishlist = await Wishlist.findOne({ userId });
 
     // If wishlist doesn't exist, create a new one
     if (!wishlist) {
@@ -20,7 +25,7 @@ router.post('/add', async (req, res) => {
     } else {
       // Check if product already exists in wishlist
       const productExists = wishlist.products.some(
-        (item) => item.productId.toString() === product.productId
+        (item) => item.productId.toString() === mongoose.Types.ObjectId(product.productId).toString()
       );
 
       if (!productExists) {
@@ -40,15 +45,19 @@ router.post('/add', async (req, res) => {
 router.delete('/remove', async (req, res) => {
   const { userId, productId } = req.body;
 
+  if (!userId || !productId) {
+    return res.status(400).json({ message: 'Invalid request body' });
+  }
+
   try {
-    let wishlist = await findOne({ userId });
+    let wishlist = await Wishlist.findOne({ userId });
 
     if (!wishlist) {
       return res.status(404).json({ message: 'Wishlist not found' });
     }
 
     wishlist.products = wishlist.products.filter(
-      (item) => item.productId.toString() !== productId
+      (item) => item.productId.toString() !== mongoose.Types.ObjectId(productId).toString()
     );
     await wishlist.save();
 
@@ -64,7 +73,7 @@ router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const wishlist = await findOne({ userId }).populate('products.productId');
+    const wishlist = await Wishlist.findOne({ userId }).populate('products.productId');
     if (!wishlist) {
       return res.status(404).json({ message: 'Wishlist not found' });
     }
