@@ -7,7 +7,7 @@ const app = express();
 // Middleware
 app.use(json());
 app.use(cors());
-
+app.use('/api/wishlist', wishlistRoutes);
 // MongoDB Connection
 connect('mongodb://localhost:27017/yourDatabaseName', {
     useNewUrlParser: true,

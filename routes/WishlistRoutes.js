@@ -1,6 +1,6 @@
-const express = require('express');
-const Wishlist = require('../models/Wishlist');
-const router = express.Router();
+import { Router } from 'express';
+import Wishlist, { findOne } from '../models/Wishlist';
+const router = Router();
 
 // Add product to wishlist
 router.post('/add', async (req, res) => {
@@ -8,7 +8,7 @@ router.post('/add', async (req, res) => {
 
   try {
     // Find wishlist by userId
-    let wishlist = await Wishlist.findOne({ userId });
+    let wishlist = await findOne({ userId });
 
     // If wishlist doesn't exist, create a new one
     if (!wishlist) {
@@ -41,7 +41,7 @@ router.delete('/remove', async (req, res) => {
   const { userId, productId } = req.body;
 
   try {
-    let wishlist = await Wishlist.findOne({ userId });
+    let wishlist = await findOne({ userId });
 
     if (!wishlist) {
       return res.status(404).json({ message: 'Wishlist not found' });
@@ -64,7 +64,7 @@ router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const wishlist = await Wishlist.findOne({ userId }).populate('products.productId');
+    const wishlist = await findOne({ userId }).populate('products.productId');
     if (!wishlist) {
       return res.status(404).json({ message: 'Wishlist not found' });
     }
@@ -76,4 +76,4 @@ router.get('/:userId', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

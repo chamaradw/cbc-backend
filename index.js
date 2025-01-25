@@ -7,6 +7,8 @@ import orderRoutes from './routes/orderRouter.js';
 import dotenv from 'dotenv';
 import jwt from "jsonwebtoken";
 import cors   from "cors";
+import {wishlistRoutes } from '../routes/wishlistRoutes.js';
+
 
 dotenv.config()
 
@@ -37,6 +39,7 @@ app.use(cors())
 app.use("/api/products",productRouter)
 app.use("/api/users",userRouter)
 app.use("/api/orders",orderRoutes)
+app.use('/api/wishlist', wishlistRoutes);
 app.listen(
   5000,
   ()=>{
