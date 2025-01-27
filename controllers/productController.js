@@ -107,8 +107,25 @@ export async function getProductsById(req, res) {
 }
 
 
+
+
 export async function searchProducts(req, res) {
-  const { query } = req.params.query;
-  const products = await Product.find({ productName: { $regex: query, $options: "i" } });
-  res.status(200).json(products);
-} 
+  try {
+    const { query } = req.params; // Correct destructuring
+    if (!query) {
+      return res.status(400).json({ message: 'Query parameter is required' });
+    }
+
+    const products = await Product.find({
+      $or: [
+        { productName: { $regex: query, $options: 'i' } },
+        { altNames: { $regex: query, $options: 'i' } },
+      ],
+    });
+
+    res.status(200).json(products);
+  } catch (error) {
+    console.error('Error searching products:', error);
+    res.status(500).json({ message: error.message });
+  }
+}

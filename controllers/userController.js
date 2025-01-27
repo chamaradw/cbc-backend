@@ -87,7 +87,7 @@ export async function loginUser(req, res) {
 // Get Current User
 export function getUser(req, res) {
   if (!req.user) {
-    return res.status(401).json({ message: "Unauthorized: No user logged in" });
+    return res.status(401).json({ message: "Unauthorized: No user logged in,please login" });
   }
 
   // Exclude sensitive data like password
