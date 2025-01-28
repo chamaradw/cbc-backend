@@ -52,6 +52,7 @@ app.use('/api/users', userRouter);
 app.use('/api/orders', orderRoutes);
 app.use('/api/wishlist', WishlistRoutes); // Fixed syntax error
 
+
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

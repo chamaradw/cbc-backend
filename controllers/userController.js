@@ -155,71 +155,73 @@ export function isCustomer(req) {
   return true;
 }
 
-export async function googleLogin(req,res){
-  console.log(req.body)
-  const token = req.body.token
-  //'https://www.googleapis.com/oauth2/v3/userinfo'
-  try{
-    const response = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo',{
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    const email = response.data.email
-    //check if user exists
-    const usersList = await User.find({email: email})
-    if(usersList.length >0){
-      const user = usersList[0]
-      const token = jwt.sign({
-        email : user.email,
-        firstName : user.firstName,
-        lastName : user.lastName,
-        isBlocked : user.isBlocked,
-        type : user.type,
-        profilePicture : user.profilePicture
-      } , process.env.SECRET)
-      
-      res.json({
-        message: "User logged in",
-        token: token,
-        user : {
-          firstName : user.firstName,
-          lastName : user.lastName,
-          type : user.type,
-          profilePicture : user.profilePicture,
-          email : user.email
-        }
-      })
-    }else{
-      //create new user
-      const newUserData = {
-        email: email,
-        firstName: response.data.given_name,
-        lastName: response.data.family_name,
-        type: "customer",
-        password: "ffffff",
-        profilePicture: response.data.picture
-      }
-      const user = new User(newUserData)
-      user.save().then(()=>{
-        res.json({
-          message: "User created"
-        })
-      }).catch((error)=>{
-        res.json({      
-          message: "User not created"
-        })
-      })
+import axios from "axios"; // Ensure axios is imported
 
+export async function googleLogin(req, res) {
+  try {
+    if (!req.body.token) {
+      return res.status(400).json({ message: "Token is required for Google login" });
     }
 
-  }catch(e){
-    res.json({
-      message: "Google login failed"
-    })
+    const token = req.body.token;
+    const response = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const { email, given_name, family_name, picture } = response.data;
+
+    // Check if user exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      const token = jwt.sign(
+        {
+          email: existingUser.email,
+          firstName: existingUser.firstName,
+          lastName: existingUser.lastName,
+          isBlocked: existingUser.isBlocked,
+          type: existingUser.type,
+          profilePicture: existingUser.profilePicture,
+        },
+        process.env.SECRET,
+        { expiresIn: "1h" }
+      );
+
+      return res.json({
+        message: "User logged in",
+        token,
+        user: {
+          firstName: existingUser.firstName,
+          lastName: existingUser.lastName,
+          type: existingUser.type,
+          profilePicture: existingUser.profilePicture,
+          email: existingUser.email,
+        },
+      });
+    }
+
+    // Create a new user if not found
+    const newUserData = {
+      email,
+      firstName: given_name,
+      lastName: family_name,
+      type: "customer",
+      password: Math.random().toString(36).slice(-8), // Generate a random password
+      profilePicture: picture,
+    };
+
+    const user = new User(newUserData);
+    await user.save();
+
+    return res.json({ message: "User created successfully", user: newUserData });
+  } catch (error) {
+    console.error("Google login error:", error);
+    return res.status(500).json({
+      message: "Google login failed",
+      error: error.message,
+    });
   }
-
-
 }
 
 

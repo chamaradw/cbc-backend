@@ -9,7 +9,7 @@ userRouter.post("/login", loginUser);
 userRouter.get("/", authenticate, getUser);               
 userRouter.get("/all", authenticate, getAllUsers);        
 userRouter.delete("/:id", authenticate, deleteUser);
-userRouter.post("google", googleLogin);
+userRouter.post("/google", googleLogin);
 
 
 export default userRouter;
