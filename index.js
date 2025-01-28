@@ -50,8 +50,7 @@ app.use(cors());
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRoutes);
-app.use('/api/wishlist', WishlistRoutes); // Fixed syntax error
-
+app.use('/api/wishlist', WishlistRoutes); 
 
 // Start the server
 const PORT = process.env.PORT || 5000;

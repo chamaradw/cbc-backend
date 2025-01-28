@@ -5,11 +5,12 @@ import { authenticate } from "../middleware/authenticate.js";
 const userRouter = express.Router();
 
 userRouter.post("/createUser", createUser) 
-userRouter.post("/login", loginUser);                     
+userRouter.post("/login", loginUser);    
+userRouter.post("/google", googleLogin);                 
 userRouter.get("/", authenticate, getUser);               
 userRouter.get("/all", authenticate, getAllUsers);        
 userRouter.delete("/:id", authenticate, deleteUser);
-userRouter.post("/google", googleLogin);
+
 
 
 export default userRouter;
