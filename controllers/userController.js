@@ -42,6 +42,7 @@ export async function createUser(req, res) {
 
 // Login User
 export async function loginUser(req, res) {
+  console.log("Incoming request body:", req.body);
   try {
     const user = await User.findOne({ email: req.body.email });
 
@@ -158,6 +159,7 @@ export function isCustomer(req) {
 import axios from "axios"; // Ensure axios is imported
 
 export async function googleLogin(req, res) {
+  console.log("Incoming google login request body:", req.body);
   try {
     if (!req.body.token) {
       return res.status(400).json({ message: "Token is required for Google login" });
