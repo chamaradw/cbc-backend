@@ -145,16 +145,44 @@ export async function deleteOrder(req, res) {
 }
 
 export async function updateOrder(req, res) {
+  if (!isAdmin(req)) {
+    res.json({
+      message: "Please login as admin to update orders",
+    });
+  }
+  
   try {
-    const { orderId } = req.params;
-    const updatedOrderData = req.body;
-    const updatedOrder = await Order.findOneAndUpdate({ orderId }, updatedOrderData, { new: true });
-    if (!updatedOrder) {
-      return res.status(404).json({ message: "Order not found" });
+    const orderId = req.params.orderId;
+
+    const order = await Order.findOne({
+      orderId: orderId,
+    });
+
+    if (order == null) {
+      res.status(404).json({
+        message: "Order not found",
+      })
+      return;
     }
-    res.json({ message: "Order updated successfully", order: updatedOrder });
-  } catch (error) {
-    console.error("Error updating order:", error);
-    res.status(500).json({ message: "Internal server error" });
+
+    const notes = req.body.notes;
+    const status = req.body.status;
+
+    const updateOrder = await Order.findOneAndUpdate(
+      { orderId: orderId },
+      { notes: notes, status: status }
+    );
+
+    res.json({
+      message: "Order updated",
+      updateOrder: updateOrder
+    });
+
+  }catch(error){
+
+    
+    res.status(500).json({
+      message: error.message,
+    });
   }
 }

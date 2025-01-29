@@ -8,5 +8,6 @@ productRouter.get("/",getProducts)
 productRouter.get("/:productId",getProductsById)
 productRouter.put("/:productId",updateProduct)
 productRouter.delete("/:productId",deleteProduct)
+productRouter.get("/search/:query",searchProducts)
 
 export default productRouter; 
