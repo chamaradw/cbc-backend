@@ -3,13 +3,9 @@ import { Schema, model } from 'mongoose';
 // Wishlist schema
 const wishlistSchema = new Schema(
   {
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
+    userId: {type: Schema.Types.ObjectId, ref: 'User', required: true,},
     products: [
-      {
+{
         productId: {
           type: Schema.Types.ObjectId,
           ref: 'Product',

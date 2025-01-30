@@ -37,7 +37,7 @@ export async function createOrder(req, res) {
         status: newOrderData.status,
       });
     }
-
+    console.log(newProductArray);
     newOrderData.orderedItems = newProductArray;
     newOrderData.orderId = orderId;
     newOrderData.email = req.user.email;
@@ -112,32 +112,34 @@ export async function deleteOrder(req, res) {
     const { orderId } = req.params;
 
     if (!req.user) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized: Please login to delete orders." });
+      return res.status(401).json({ message: "Unauthorized: Please login to delete orders." });
     }
 
-    console.log("User making the request:", req.user);
+    console.log("User attempting to delete order:", req.user);
+
+    if (!orderId) {
+      return res.status(400).json({ message: "Bad Request: Order ID is required." });
+    }
 
     const order = await Order.findOne({ orderId });
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    console.log("Order email:", order.email);
-    console.log("Is user an admin:", req.user.isAdmin);
+    console.log(`Order found for deletion - ID: ${orderId}, Email: ${order.email}`);
 
+    // Authorization check: Only the owner or an admin can delete
     if (order.email !== req.user.email && !req.user.isAdmin) {
-      return res
-        .status(403)
-        .json({ message: "Forbidden: You are not authorized to delete this order" });
+      return res.status(403).json({ message: "Forbidden: You are not authorized to delete this order." });
     }
-    console.log("User making the request:", req.user);
-    console.log("Order email:", order.email);
-    console.log("Is user an admin:", req.user.isAdmin);
 
-    await Order.deleteOne({ orderId });
-    res.json({ message: "Order deleted successfully" });
+    const deletedOrder = await Order.findOneAndDelete({ orderId });
+
+    if (!deletedOrder) {
+      return res.status(500).json({ message: "Failed to delete order." });
+    }
+
+    res.json({ message: "Order deleted successfully", deletedOrder });
   } catch (error) {
     console.error("Error deleting order:", error);
     res.status(500).json({ message: "Internal server error" });

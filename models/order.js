@@ -17,15 +17,15 @@ const orderSchema = mongoose.Schema(
       description : {type : String,required : false}
     }
   ],
-    custName : {type : String,required : true},         //name of the customer
-    custAddress : {type : String,required : true },     //address of the customer
+    custName : {type : String,required : true},       
+    custAddress : {type : String,required : true },   
     paymentId:{type : String},
     date : {type : Date,default : Date.now},
     status : {type : String,default : "Processing"},
-    notes : {type : String},                        //notes of the customer
-    phone : {type : String,required : true}         //phone number of the customer  
+    notes : {type : String},                        
+    phone : {type : String,required : true}         
 })
 
-const Order = mongoose.model("orders",orderSchema); //
+const Order = mongoose.model("orders",orderSchema); 
 
 export default Order;
