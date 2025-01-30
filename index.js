@@ -7,6 +7,7 @@ import productRouter from './routes/productRouter.js';
 import userRouter from './routes/userRouter.js';
 import orderRoutes from './routes/orderRouter.js';
 import WishlistRoutes from './routes/WishlistRoutes.js'; 
+import LoginLog from './models/loginLog.js';
 dotenv.config();
 
 const app = express();
@@ -58,6 +59,7 @@ app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRoutes);
 app.use('/api/wishlist', WishlistRoutes); 
+app.use('/api/users/api/users/login-logs', LoginLog);
 
 
 // Start the server

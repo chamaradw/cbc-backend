@@ -27,6 +27,6 @@ exports.logLoginDetails = async (req, res) => {
     res.status(201).json({ success: true, message: 'Login details logged successfully.' });
   } catch (error) {
     console.error('Error logging login details:', error);
-    res.status(500).json({ success: false, message: 'Error logging login details.' });
+    res.status(500).json({ success: false, message: 'Error logging  details.' });
   }
 };

@@ -1,11 +1,17 @@
-import express from 'express';
-
-const express = require('express');
-const { logLoginDetails } = require('../controllers/loginLogController');
+import express from "express";
+import LoginLog from "../models/loginLog.js";
 
 const router = express.Router();
 
-// Route to log login details
-router.post('/log-login', logLoginDetails);
+// Fetch all login logs
+router.get("/login-logs", async (req, res) => {
+  try {
+    const logs = await LoginLog.find().sort({ timestamp: -1 });
+    res.json(logs);
+  } catch (error) {
+    console.error("Error fetching login logs:", error);
+    res.status(500).json({ message: "Error fetching login logs" });
+  }
+});
 
-module.exports = router;
+export default router;
