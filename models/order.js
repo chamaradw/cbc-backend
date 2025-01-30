@@ -11,7 +11,7 @@ const orderSchema = mongoose.Schema(
       altNames : [{type : String}],
       images : [{type : String}],
       price : {type : Number,required : false},
-      qty : {type : Number,required : true},
+      quantity: {type : Number,required : true},
       lastPrice : {type : Number,required : false},
       stock : {type : Number,required : false},
       description : {type : String,required : false}

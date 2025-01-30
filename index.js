@@ -43,8 +43,15 @@ app.use((req, res, next) => {
   }
 });
 
+
+// Define your frontend URL
+const allowedOrigin = "http://localhost:5174";
 // CORS middleware
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigin, // Explicitly allow your frontend origin
+  credentials: true, // Allow cookies & authentication
+
+}));
 
 // Routes
 app.use('/api/products', productRouter);
