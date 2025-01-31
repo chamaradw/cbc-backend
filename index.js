@@ -7,6 +7,8 @@ import productRouter from './routes/productRouter.js';
 import userRouter from './routes/userRouter.js';
 import orderRoutes from './routes/orderRouter.js';
 import WishlistRoutes from './routes/WishlistRoutes.js'; 
+import router from './routes/WishlistRoutes.js';
+
 
 
 dotenv.config();
@@ -52,6 +54,7 @@ app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRoutes);
 app.use('/api/wishlist', WishlistRoutes);
+app.use('/api/reviews', router);
 
 
 // Start the server
