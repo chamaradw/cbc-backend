@@ -6,12 +6,12 @@ import cors from 'cors';
 import productRouter from './routes/productRouter.js';
 import userRouter from './routes/userRouter.js';
 import orderRoutes from './routes/orderRouter.js';
-import WishlistRoutes from './routes/WishlistRoutes.js'; 
-import router from './routes/WishlistRoutes.js';
+import WishlistRoutes from './routes/WishlistRoutes.js';
 
 
 
 dotenv.config();
+
 
 const app = express();
 const mongoUrl = process.env.MONGO_DB_URI;
@@ -22,7 +22,7 @@ const connectToDB = async () => {
     await mongoose.connect(mongoUrl);
     console.log('Connection to MongoDB is successfully established!');
   } catch (error) {
-    console.error('Error connecting to MongoDB :', error);
+    console.error('Error connecting to MongoDB:', error);
     process.exit(1); // Exit process if connection fails
   }
 };
@@ -54,7 +54,6 @@ app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRoutes);
 app.use('/api/wishlist', WishlistRoutes);
-app.use('/api/reviews', router);
 
 
 // Start the server
