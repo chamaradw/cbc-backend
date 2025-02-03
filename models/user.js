@@ -7,10 +7,10 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   isBlocked: { type: Boolean, default: false },
   type: { type: String, default: "customer" },
-  fullName: { type: String, required: true }, // This will be auto-filled
-  address: { type: String, required: true },
-  deliveryAddress: { type: String, required: true },
-  phone1: { type: String, required: true },
+  fullName: { type: String, required: false }, // This will be auto-filled
+  address: { type: String, required: false },
+  deliveryAddress: { type: String, required: false },
+  phone1: { type: String, required: false},
   phone2: { type: String },
   profilePicture: {
     type: String,
