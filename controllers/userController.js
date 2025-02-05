@@ -189,7 +189,7 @@ export async function googleLogin(req, res) {
     const email = response.data.email;
 
     // Check if user exists
-    const user = await User.findOne({ email });
+    const user = await User.find({ email });
 
     if (user) {
       const token = jwt.sign(
@@ -201,12 +201,12 @@ export async function googleLogin(req, res) {
           type: user.type,
           profilePicture: user.profilePicture,
         },
-        process.env.SECRET // ✅ Fixed secret variable name
+        process.env.SECRET /
       );
 
       return res.json({
         message: "User logged in",
-        token,
+        token: token,
         user: {
           firstName: user.firstName,
           lastName: user.lastName,
@@ -226,8 +226,7 @@ export async function googleLogin(req, res) {
         profilePicture: response.data.picture,
       });
 
-      await newUser.save(); // ✅ Added `await` to properly save user
-
+      await newUser.save(); 
       return res.json({ message: "User created" });
     }
   } catch (error) {
