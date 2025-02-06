@@ -8,6 +8,7 @@ import userRouter from './routes/userRouter.js';
 import orderRoutes from './routes/orderRouter.js';
 import WishlistRoutes from './routes/WishlistRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
+import orderRouter from './routes/orderRouter.js';
 
 
 
@@ -40,7 +41,7 @@ app.use(cors());
 // Routes
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
-app.use('/api/orders', orderRoutes);
+app.use('/api/orders', orderRouter);
 app.use('/api/wishlist', WishlistRoutes);
 app.use("/api/reviews", reviewRoutes);
 
