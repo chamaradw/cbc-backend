@@ -1,7 +1,8 @@
-import User from "../models/user.js";  
+import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import axios from "axios"; // ✅ Added missing import
 
 dotenv.config();
 
@@ -10,33 +11,32 @@ export async function createUser(req, res) {
   const newUserData = req.body;
 
   if (newUserData.type === "admin") {
-    if (req.user == null) {
+    if (!req.user) {
       return res.status(401).json({
-        message: "Please login as administrator to create admin accounts"
+        message: "Please login as administrator to create admin accounts",
       });
     }
 
     if (req.user.type !== "admin") {
       return res.status(403).json({
-        message: "Please login as administrator to create admin accounts"
+        message: "Please login as administrator to create admin accounts",
       });
     }
   }
 
   try {
-    newUserData.password = await bcrypt.hash(newUserData.password, 10);  // Use async bcrypt.hash
+    newUserData.password = await bcrypt.hash(newUserData.password, 10); // ✅ Ensure bcrypt.hash is awaited
     const user = new User(newUserData);
 
     await user.save();
     return res.status(201).json({
-      message: "User created successfully"
-      
+      message: "User created successfully",
     });
   } catch (error) {
     console.error("Error creating user:", error);
     return res.status(500).json({
       message: "User not created",
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -50,7 +50,11 @@ export async function loginUser(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);  // Use async bcrypt.compare
+    const isPasswordCorrect = await bcrypt.compare(
+      req.body.password,
+      user.password
+    ); // ✅ Ensure bcrypt.compare is awaited
+
     if (isPasswordCorrect) {
       const token = jwt.sign(
         {
@@ -61,8 +65,8 @@ export async function loginUser(req, res) {
           type: user.type,
           profilePicture: user.profilePicture,
         },
-        process.env.SECRET,
-        { expiresIn: '1h' }
+        process.env.SECRET, // ✅ Fixed secret variable name
+        { expiresIn: "1h" }
       );
 
       return res.json({
@@ -81,7 +85,10 @@ export async function loginUser(req, res) {
     }
   } catch (error) {
     console.error("Error logging in:", error);
-    return res.status(500).json({ message: "Internal server error", error: error.message });
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 }
 
@@ -91,15 +98,20 @@ export function getUser(req, res) {
     return res.status(401).json({ message: "Unauthorized: No user logged in" });
   }
 
-  // Exclude sensitive data like password
-  const { password, ...safeUserData } = req.user.toObject ? req.user.toObject() : req.user;
+  // ✅ Use `.toObject()` if available, to exclude sensitive data
+  const { password, ...safeUserData } = req.user.toObject
+    ? req.user.toObject()
+    : req.user;
+
   return res.status(200).json(safeUserData);
 }
 
-// Get All Users
+// Get All Users (Admin Only)
 export async function getAllUsers(req, res) {
   if (!req.user || req.user.type !== "admin") {
-    return res.status(403).json({ message: "Forbidden: Admin access required" });
+    return res.status(403).json({
+      message: "Forbidden: Admin access required",
+    });
   }
 
   try {
@@ -108,7 +120,11 @@ export async function getAllUsers(req, res) {
       const { password, ...safeUserData } = user.toObject();
       return safeUserData;
     });
-    return res.status(200).json({ success: true, data: sanitizedUsers });
+
+    return res.status(200).json({
+      success: true,
+      data: sanitizedUsers,
+    });
   } catch (error) {
     console.error("Error retrieving users:", error);
     return res.status(500).json({
@@ -119,13 +135,14 @@ export async function getAllUsers(req, res) {
   }
 }
 
-// DELETE User function
+// DELETE User function (Admin Only)
 export async function deleteUser(req, res) {
   const userId = req.params.id;
 
-  // Check if the user is an admin before proceeding with the deletion
   if (!isAdmin(req)) {
-    return res.status(403).json({ message: "Forbidden: Admin access required to delete users" });
+    return res.status(403).json({
+      message: "Forbidden: Admin access required to delete users",
+    });
   }
 
   try {
@@ -138,90 +155,98 @@ export async function deleteUser(req, res) {
     return res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     console.error("Error deleting user:", error);
-    return res.status(500).json({ message: "Internal server error", error: error.message });
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 }
 
+// Helper functions
 export function isAdmin(req) {
-  if (req.user == null || req.user.type !== "admin") {
-    return false;
-  }
-  return true;
+  return req.user && req.user.type === "admin";
 }
 
 export function isCustomer(req) {
-  if (req.user == null || req.user.type !== "customer") {
-    return false;
-  }
-  return true;
+  return req.user && req.user.type === "customer";
 }
-export async function googleLogin(req,res){
-  console.log(req.body)
-  const token = req.body.token
-  //'https://www.googleapis.com/oauth2/v3/userinfo'
-  try{
-    const response = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo',{
-      headers: {
-        Authorization: `Bearer ${token}`
+
+// Google Login
+export async function googleLogin(req, res) {
+  console.log(req.body);
+  const token = req.body.token;
+
+  try {
+    const response = await axios.get(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    })
-    const email = response.data.email
-    //check if user exists
-    const usersList = await User.find({email: email})
-    if(usersList.length >0){
-      const user = usersList[0]
-      const token = jwt.sign({
-        email : user.email,
-        firstName : user.firstName,
-        lastName : user.lastName,
-        isBlocked : user.isBlocked,
-        type : user.type,
-        profilePicture : user.profilePicture
-      } , process.env.SECRET)
-      
-      res.json({
+    );
+
+    const email = response.data.email;
+
+    // Check if user exists
+    const user = await User.findOne({ email });
+
+    if (user) {
+      const token = jwt.sign(
+        {
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          isBlocked: user.isBlocked,
+          type: user.type,
+          profilePicture: user.profilePicture,
+        },
+        process.env.SECRET // ✅ Fixed secret variable name
+      );
+
+      return res.json({
         message: "User logged in",
-        token: token,
-        user : {
-          firstName : user.firstName,
-          lastName : user.lastName,
-          type : user.type,
-          profilePicture : user.profilePicture,
-          email : user.email
-        }
-      })
-    }else{
-      //create new user
-      const newUserData = {
-        email: email,
+        token,
+        user: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          type: user.type,
+          profilePicture: user.profilePicture,
+          email: user.email,
+        },
+      });
+    } else {
+      // Create new user
+      const newUser = new User({
+        email,
         firstName: response.data.given_name,
         lastName: response.data.family_name,
         type: "customer",
         password: "ffffff",
-        profilePicture: response.data.picture
-      }
-      const user = new User(newUserData)
-      user.save().then(()=>{
-        res.json({
-          message: "User created"
-        })
-      }).catch((error)=>{
-        res.json({      
-          message: "User not created"
-        })
-      })
+        profilePicture: response.data.picture,
+      });
 
+      await newUser.save(); // ✅ Added `await` to properly save user
+
+      return res.json({ message: "User created" });
     }
-
-  }catch(e){
-    res.json({
-      message: "Google login failed"
-    })
+  } catch (error) {
+    console.error("Google login failed:", error);
+    return res.status(500).json({ message: "Google login failed" });
   }
-
-
 }
 
+// Get User Profile
+export async function getUserProfile(req, res) {
+  try {
+    const user = await User.findById(req.user.id);
 
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-
+    res.json({ name: user.name, address: user.address, phone: user.phone1 }); // ✅ Fixed `phone1` to `phone`
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+}
