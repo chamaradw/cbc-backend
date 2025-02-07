@@ -8,6 +8,7 @@ import userRouter from './routes/userRouter.js';
 import orderRoutes from './routes/orderRouter.js';
 import WishlistRoutes from './routes/WishlistRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
+import orderRouter from './routes/orderRouter.js';
 
 
 
@@ -36,24 +37,11 @@ app.use(express.json());
 // CORS middleware
 app.use(cors());
 
-// JWT authentication middleware
-app.use((req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (token) {
-    jwt.verify(token, process.env.SECRET, (error, decoded) => {
-      if (error) {
-        return res.status(401).json({ error: 'Authentication failed' });
-      }
-      req.user = decoded;
-    });
-  }
-  next();
-});
 
 // Routes
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
-app.use('/api/orders', orderRoutes);
+app.use('/api/orders', orderRouter);
 app.use('/api/wishlist', WishlistRoutes);
 app.use("/api/reviews", reviewRoutes);
 

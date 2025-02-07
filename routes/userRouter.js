@@ -8,10 +8,14 @@ const userRouter = express.Router();
 userRouter.post("/createUser", createUser) 
 userRouter.post("/login", loginUser);    
 userRouter.post("/google", googleLogin);                 
-userRouter.get("/", authenticate, getUser);               
+userRouter.get("/getUser");               
 userRouter.get("/all", authenticate, getAllUsers);        
 userRouter.delete("/:id", authenticate, deleteUser);
 userRouter.get("/profile", authenticate, getUserProfile);
+<<<<<<< HEAD
+=======
+
+>>>>>>> be1cc26895019768ff9f21786b5de0712bd82c7c
 
 
 
