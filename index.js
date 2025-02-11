@@ -9,11 +9,7 @@ import orderRoutes from './routes/orderRouter.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import wishlistRoutes from "./routes/wishlistRoutes.js";
 
-
-
 dotenv.config();
-
-
 const app = express();
 const mongoUrl = process.env.MONGO_DB_URI;
 
@@ -29,7 +25,6 @@ const connectToDB = async () => {
 };
 
 connectToDB();
-
 // Middleware for parsing JSON
 app.use(express.json());
 

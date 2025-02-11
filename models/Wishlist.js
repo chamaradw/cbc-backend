@@ -1,26 +1,15 @@
-import { Schema, model } from 'mongoose';
+import mongoose from "mongoose";
 
-// Wishlist schema
-const wishlistSchema = new Schema(
-  {
-    email: {type: Schema.Types.ObjectId, ref: 'user', required: true,},
-    products: [
-{
-        productId: {
-          type: Schema.Types.ObjectId,
-          ref: 'product',
-          required: true,
-        },
-        productName: { type: String, required: true },
-        images: { type: String, required: true },
-        price: { type: Number, required: true },
-        quantity: { type: Number, required: true },
-      },
-    ],
-  },
-  { timestamps: true } // Automatically add createdAt and updatedAt fields
-);
+const wishlistSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  products: [
+    {
+      productId: { type: String, required: true },
+      productName: { type: String, required: true },
+      price: { type: Number, required: true },
+      image: { type: String, required: true },
+    },
+  ],
+}, { timestamps: true });
 
-const Wishlist = model('Wishlist', wishlistSchema);
-
-export default Wishlist;
+export default mongoose.model("Wishlist", wishlistSchema);

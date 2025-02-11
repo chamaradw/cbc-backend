@@ -5,6 +5,6 @@ const router = Router();
 
 router.post("/add", addToWishlist);
 router.delete("/remove", removeFromWishlist);
-router.get("/:userId", getWishlist);
+router.get("/:email", getWishlist);
 
 export default router;
