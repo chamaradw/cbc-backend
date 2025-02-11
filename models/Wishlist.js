@@ -3,12 +3,12 @@ import { Schema, model } from 'mongoose';
 // Wishlist schema
 const wishlistSchema = new Schema(
   {
-    userId: {type: Schema.Types.ObjectId, ref: 'User', required: true,},
+    email: {type: Schema.Types.ObjectId, ref: 'user', required: true,},
     products: [
 {
         productId: {
           type: Schema.Types.ObjectId,
-          ref: 'Product',
+          ref: 'product',
           required: true,
         },
         productName: { type: String, required: true },

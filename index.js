@@ -6,8 +6,8 @@ import cors from 'cors';
 import productRouter from './routes/productRouter.js';
 import userRouter from './routes/userRouter.js';
 import orderRoutes from './routes/orderRouter.js';
-import WishlistRoutes from './routes/WishlistRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
+import wishlistRoutes from "./routes/wishlistRoutes.js";
 
 
 
@@ -54,8 +54,9 @@ app.use((req, res, next) => {
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRoutes);
-app.use('/api/wishlist', WishlistRoutes);
+app.use('/api/wishlist', wishlistRoutes);
 app.use("/api/reviews", reviewRoutes);
+
 
 // Start the server
 const PORT = process.env.PORT || 5000;
