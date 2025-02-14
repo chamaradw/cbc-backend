@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import Wishlist from "../models/wishlist.js";
+
+import Wishlist from "../models/Wishlist.js";
 
 // Add product to wishlist
 export const addToWishlist = async (req, res) => {
