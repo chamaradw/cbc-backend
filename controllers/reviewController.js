@@ -4,20 +4,26 @@ import Review from "../models/Review.js";
 // Add a new review
 export const submitReview = async (req, res) => {
   try {
+    console.log(req.body);
     const { productId, userName, rating, comment } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: "Invalid product ID format" });
+    // No need for ObjectId validation since productId is a string
+    if (!productId || !userName || !rating || !comment) {
+      return res.status(400).json({ message: "All fields are required." });
     }
 
+    // Create a new review object
     const newReview = new Review({
-      productId: new mongoose.Types.ObjectId(productId), // Convert to ObjectId
+      productId, // productId is already a string, no need to convert
       userName,
       rating,
       comment,
     });
 
+    // Save the new review to the database
     await newReview.save();
+
+    // Return a success response
     res.status(201).json({ message: "Review submitted successfully", review: newReview });
 
   } catch (error) {
@@ -31,12 +37,15 @@ export const getReviews = async (req, res) => {
   try {
     const { productId } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: "Invalid product ID format" });
+    // Check if productId is provided
+    if (!productId) {
+      return res.status(400).json({ message: "Product ID is required" });
     }
 
-    const reviews = await Review.find({ productId: new mongoose.Types.ObjectId(productId) });
+    // Fetch reviews for the given productId (as a string)
+    const reviews = await Review.find({ productId });
 
+    // Return reviews
     res.status(200).json(reviews);
   } catch (error) {
     console.error("Error fetching reviews:", error);

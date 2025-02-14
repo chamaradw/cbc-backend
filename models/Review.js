@@ -3,8 +3,7 @@ import mongoose from "mongoose";
 const reviewSchema = new mongoose.Schema(
   {
     productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "product",
+      type: String, // Store productId as a string (e.g., 'SLB008')
       required: true,
     },
     userName: {
