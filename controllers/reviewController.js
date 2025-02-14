@@ -22,10 +22,16 @@ export const addReview = async (req, res) => {
 export const getReviews = async (req, res) => {
   try {
     const { productId } = req.params;
-    const reviews = await Review.find({ productId }).sort({ createdAt: -1 });
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ message: "Invalid product ID format" });
+    }
+
+    const reviews = await Review.find({ productId: new mongoose.Types.ObjectId(productId) });
 
     res.status(200).json(reviews);
   } catch (error) {
-    res.status(500).json({ message: "Server error.", error });
+    console.error("Error fetching reviews:", error);
+    res.status(500).json({ message: "Internal server error", error });
   }
 };
