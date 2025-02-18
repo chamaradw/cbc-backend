@@ -7,36 +7,32 @@ dotenv.config();
 
 // Create User
 export async function createUser(req, res) {
-  const newUserData = req.body;
-
-  if (newUserData.type === "admin") {
-    if (!req.user) {
-      return res.status(401).json({
-        message: "Please login as administrator to create admin accounts",
-      });
-    }
-
-    if (req.user.type !== "admin") {
-      return res.status(403).json({
-        message: "Please login as administrator to create admin accounts",
-      });
-    }
-  }
-
   try {
-    newUserData.password = await bcrypt.hash(newUserData.password, 10); // ✅ Ensure bcrypt.hash is awaited
-    const user = new User(newUserData);
+    const { email, firstName, lastName, password, address, deliveryAddress, phone1, phone2, profilePicture, type } = req.body;
+
+    // Hash Password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create New User
+    const user = new User({
+      email,
+      firstName,
+      lastName,
+      password: hashedPassword,
+      address: address || "",
+      deliveryAddress: deliveryAddress || "",
+      phone1: phone1 || "",
+      phone2: phone2 || "",
+      profilePicture: profilePicture || "",
+      type: type || "customer",
+    });
 
     await user.save();
-    return res.status(201).json({
-      message: "User created successfully",
-    });
+
+    res.status(201).json({ message: "User created successfully", user });
   } catch (error) {
     console.error("Error creating user:", error);
-    return res.status(500).json({
-      message: "User not created",
-      error: error.message,
-    });
+    res.status(500).json({ message: "User not created", error: error.message });
   }
 }
 
@@ -247,5 +243,49 @@ export async function getUserProfile(req, res) {
     res.json({ name: user.name, address: user.address, phone: user.phone1 }); // ✅ Fixed `phone1` to `phone`
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+}
+// Update User
+// Update User by Email
+export async function updateUser(req, res) {
+  try {
+    const userEmail = req.params.email; // Identify user by email
+    const updates = req.body;
+
+    // Find User
+    const user = await User.findOne({ email: userEmail });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Ensure only the logged-in user (or admin) can update the profile
+    if (req.user.email !== userEmail && req.user.type !== "admin") {
+      return res.status(403).json({ message: "Forbidden: You can only update your own profile" });
+    }
+
+    // Prevent updating restricted fields
+    const restrictedFields = ["email", "password", "isBlocked", "type"];
+    restrictedFields.forEach(field => delete updates[field]);
+
+    // Handle password update separately
+    if (req.body.password) {
+      updates.password = await bcrypt.hash(req.body.password, 10);
+    }
+
+    // Ensure all optional fields are included
+    const updatedUser = await User.findOneAndUpdate(
+      { email: userEmail },
+      {
+        ...updates,
+        fullName: `${updates.firstName || user.firstName} ${updates.lastName || user.lastName}`,
+      },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({ message: "User updated successfully", user: updatedUser });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 }
