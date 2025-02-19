@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import axios from "axios"; 
+import LoginLog from "../models/LoginLog.js";
+
 dotenv.config();
 
 // Create User
@@ -39,51 +41,51 @@ export async function createUser(req, res) {
 // Login User
 export async function loginUser(req, res) {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
 
     if (!user) {
+      await LoginLog.create({ email, provider: "Email", status: "Failure" });
       return res.status(404).json({ message: "User not found" });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(
-      req.body.password,
-      user.password
-    ); // ✅ Ensure bcrypt.compare is awaited
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-    if (isPasswordCorrect) {
-      const token = jwt.sign(
-        {
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          isBlocked: user.isBlocked,
-          type: user.type,
-          profilePicture: user.profilePicture,
-        },
-        process.env.SECRET, // ✅ Fixed secret variable name
-        { expiresIn: "1h" }
-      );
-
-      return res.json({
-        message: "Successfully logged in",
-        token,
-        user: {
-          firstName: user.firstName,
-          lastName: user.lastName,
-          type: user.type,
-          profilePicture: user.profilePicture,
-          email: user.email,
-        },
-      });
-    } else {
+    if (!isPasswordCorrect) {
+      await LoginLog.create({ email, provider: "Email", status: "Failure" });
       return res.status(400).json({ message: "Wrong password" });
     }
+
+    const token = jwt.sign(
+      {
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        isBlocked: user.isBlocked,
+        type: user.type,
+        profilePicture: user.profilePicture,
+      },
+      process.env.SECRET,
+      { expiresIn: "1h" }
+    );
+
+    // ✅ Log successful login attempt
+    await LoginLog.create({ email, provider: "Email", status: "Success" });
+
+    return res.json({
+      message: "Successfully logged in",
+      token,
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        type: user.type,
+        profilePicture: user.profilePicture,
+        email: user.email,
+      },
+    });
   } catch (error) {
     console.error("Error logging in:", error);
-    return res.status(500).json({
-      message: "Internal server error",
-      error: error.message,
-    });
+    return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 }
 
@@ -245,7 +247,7 @@ export async function getUserProfile(req, res) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 }
-// Update User
+
 // Update User by Email
 export async function updateUser(req, res) {
   try {
