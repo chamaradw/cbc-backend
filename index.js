@@ -33,7 +33,7 @@ app.use(express.json());
 // CORS middleware with configuration
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173", // Specify your client URL
+    origin: process.env.CLIENT_URL || "*", // Specify your client URL
     credentials: true, // Enable credentials (cookies, authorization headers, etc.)
   })
 );
