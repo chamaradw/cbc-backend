@@ -254,34 +254,38 @@ export async function updateUser(req, res) {
     const userEmail = req.params.email; // Identify user by email
     const updates = req.body;
 
-    // Find User
+    // Find User by email
     const user = await User.findOne({ email: userEmail });
-
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Ensure only the logged-in user (or admin) can update the profile
+    // Ensure that only the logged-in user or an admin can update the profile
     if (req.user.email !== userEmail && req.user.type !== "admin") {
       return res.status(403).json({ message: "Forbidden: You can only update your own profile" });
     }
 
-    // Prevent updating restricted fields
-    const restrictedFields = ["email", "password", "isBlocked", "type"];
+    // Remove fields that should not be updated by anyone
+    const restrictedFields = ["email", "password", "type"];
     restrictedFields.forEach(field => delete updates[field]);
+
+    // Only allow admins to update the isBlocked field
+    if (req.user.type !== "admin") {
+      delete updates.isBlocked;
+    }
 
     // Handle password update separately
     if (req.body.password) {
       updates.password = await bcrypt.hash(req.body.password, 10);
     }
 
-    // Ensure all optional fields are included
+    // Update fullName manually if firstName or lastName is changed
+    updates.fullName = `${updates.firstName || user.firstName} ${updates.lastName || user.lastName}`.trim();
+
+    // Update the user with the remaining allowed fields
     const updatedUser = await User.findOneAndUpdate(
       { email: userEmail },
-      {
-        ...updates,
-        fullName: `${updates.firstName || user.firstName} ${updates.lastName || user.lastName}`,
-      },
+      updates,
       { new: true, runValidators: true }
     );
 
