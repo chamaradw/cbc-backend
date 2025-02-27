@@ -37,7 +37,7 @@ export const getAllReviews = async (req, res) => {
   try {
     console.log("🛠️ User trying to access reviews:", req.user);
 
-    if (!req.user || !req.user.isAdmin) {
+    if (!req.user || !req.user.type === "admin") {
       console.error("❌ Access Denied: User is not an admin.");
       return res.status(403).json({ message: "Access denied. Admins only." });
     }
