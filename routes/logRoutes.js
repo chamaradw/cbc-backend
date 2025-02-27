@@ -4,6 +4,7 @@ import { authenticate } from "../middleware/authenticate.js";
 
 const logRouter = express.Router();
 
-logRouter.get("/login-logs", authenticate, getLoginLogs); // ✅ Admin-only access
+// ✅ Secure route with authentication middleware
+logRouter.get("/login-logs", authenticate, getLoginLogs);
 
 export default logRouter;
