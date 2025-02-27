@@ -223,7 +223,7 @@ export async function googleLogin(req, res) {
         profilePicture: response.data.picture,
       });
 
-      await newUser.save(); // ✅ Added `await` to properly save user
+      await newUser.save(); //  Added `await` to properly save user
 
       return res.json({ message: "User created" });
     }
