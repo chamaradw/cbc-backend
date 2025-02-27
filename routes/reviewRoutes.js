@@ -1,11 +1,5 @@
 import express from "express";
-import {
-  submitReview,
-  getReviews,
-  getAllReviews,
-  toggleHideReview,
-  deleteReview,
-} from "../controllers/reviewController.js";
+import {submitReview,getReviews,getAllReviews,toggleHideReview,deleteReview,} from "../controllers/reviewController.js";
 import { authenticate } from "../middleware/authenticate.js";
 
 const router = express.Router();

@@ -34,29 +34,39 @@ export const getReviews = async (req, res) => {
 
 // Get all reviews (admin-only)
 export const getAllReviews = async (req, res) => {
-  if (!req.user.isAdmin) {
-    return res.status(403).json({ message: "Access denied. Admins only." });
-  }
   try {
+    console.log("🛠️ User trying to access reviews:", req.user);
+
+    if (!req.user || !req.user.isAdmin) {
+      console.error("❌ Access Denied: User is not an admin.");
+      return res.status(403).json({ message: "Access denied. Admins only." });
+    }
+
     const reviews = await Review.find({});
     res.status(200).json(reviews);
   } catch (error) {
-    console.error("Error fetching all reviews:", error);
+    console.error("❌ Error fetching reviews:", error);
     res.status(500).json({ message: "Internal server error", error });
   }
 };
 
+
+
 // Toggle hide/unhide a review (admin-only)
 export const toggleHideReview = async (req, res) => {
-  if (!req.user.isAdmin) {
-    return res.status(403).json({ message: "Access denied. Admins only." });
-  }
   try {
+    if (!req.user || !req.user.isAdmin) {
+      console.error("Unauthorized attempt to toggle review visibility.");
+      return res.status(403).json({ message: "Access denied. Admins only." });
+    }
+
     const { id } = req.params;
     const review = await Review.findById(id);
     if (!review) {
+      console.error(`Review with ID ${id} not found.`);
       return res.status(404).json({ message: "Review not found" });
     }
+
     review.isHidden = !review.isHidden;
     await review.save();
     res.status(200).json({ message: "Review visibility toggled", review });
@@ -68,15 +78,19 @@ export const toggleHideReview = async (req, res) => {
 
 // Delete a review (admin-only)
 export const deleteReview = async (req, res) => {
-  if (!req.user.isAdmin) {
-    return res.status(403).json({ message: "Access denied. Admins only." });
-  }
   try {
+    if (!req.user || !req.user.isAdmin) {
+      console.error("Unauthorized delete attempt.");
+      return res.status(403).json({ message: "Access denied. Admins only." });
+    }
+
     const { id } = req.params;
     const review = await Review.findByIdAndDelete(id);
     if (!review) {
+      console.error(`Failed to delete. Review with ID ${id} not found.`);
       return res.status(404).json({ message: "Review not found" });
     }
+
     res.status(200).json({ message: "Review deleted successfully", review });
   } catch (error) {
     console.error("Error deleting review:", error);
