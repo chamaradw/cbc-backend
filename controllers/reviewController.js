@@ -55,7 +55,7 @@ export const getAllReviews = async (req, res) => {
 // Toggle hide/unhide a review (admin-only)
 export const toggleHideReview = async (req, res) => {
   try {
-    if (!req.user || !req.user.isAdmin) {
+    if (!req.user || !req.user.type === "admin") {
       console.error("Unauthorized attempt to toggle review visibility.");
       return res.status(403).json({ message: "Access denied. Admins only." });
     }
@@ -79,7 +79,7 @@ export const toggleHideReview = async (req, res) => {
 // Delete a review (admin-only)
 export const deleteReview = async (req, res) => {
   try {
-    if (!req.user || !req.user.isAdmin) {
+    if (!req.user || !req.user.type === "admin") {
       console.error("Unauthorized delete attempt.");
       return res.status(403).json({ message: "Access denied. Admins only." });
     }
