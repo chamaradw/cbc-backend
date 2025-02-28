@@ -35,9 +35,7 @@ export const getReviews = async (req, res) => {
 // Get all reviews (admin-only)
 export const getAllReviews = async (req, res) => {
   try {
-    console.log("🛠️ User trying to access reviews:", req.user);
-
-    if (!req.user || !req.user.type === "admin") {
+    if (!req.user || req.user.type !== "admin") {
       console.error("❌ Access Denied: User is not an admin.");
       return res.status(403).json({ message: "Access denied. Admins only." });
     }
@@ -50,20 +48,19 @@ export const getAllReviews = async (req, res) => {
   }
 };
 
-
-
 // Toggle hide/unhide a review (admin-only)
 export const toggleHideReview = async (req, res) => {
   try {
-    if (!req.user || !req.user.type === "admin") {
+    if (!req.user || req.user.type !== "admin") {
       console.error("Unauthorized attempt to toggle review visibility.");
       return res.status(403).json({ message: "Access denied. Admins only." });
     }
 
-    const { id } = req.params;
-    const review = await Review.findById(id);
+    const { productId } = req.params;
+    // Find review by productId, not _id
+    const review = await Review.findOne({ productId });
     if (!review) {
-      console.error(`Review with ID ${id} not found.`);
+      console.error(`Review with productId ${productId} not found.`);
       return res.status(404).json({ message: "Review not found" });
     }
 
@@ -79,15 +76,16 @@ export const toggleHideReview = async (req, res) => {
 // Delete a review (admin-only)
 export const deleteReview = async (req, res) => {
   try {
-    if (!req.user || !req.user.type === "admin") {
+    if (!req.user || req.user.type !== "admin") {
       console.error("Unauthorized delete attempt.");
       return res.status(403).json({ message: "Access denied. Admins only." });
     }
 
-    const { id } = req.params;
-    const review = await Review.findByIdAndDelete(id);
+    const { productId } = req.params;
+    // Find and delete review based on productId, not _id
+    const review = await Review.findOneAndDelete({ productId });
     if (!review) {
-      console.error(`Failed to delete. Review with ID ${id} not found.`);
+      console.error(`Failed to delete. Review with productId ${productId} not found.`);
       return res.status(404).json({ message: "Review not found" });
     }
 
