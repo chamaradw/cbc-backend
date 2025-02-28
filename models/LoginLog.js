@@ -6,7 +6,7 @@ const loginLogSchema = new mongoose.Schema(
     provider: { type: String, required: true, enum: ["Email", "Google"] },
     status: { type: String, required: true, enum: ["Success", "Failure"] },
   },
-  { timestamps: true } // Automatically adds `createdAt` and `updatedAt`
+  { timestamps: true }
 );
 
 const LoginLog = mongoose.model("LoginLog", loginLogSchema);

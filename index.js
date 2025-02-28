@@ -33,8 +33,8 @@ app.use(express.json());
 // CORS middleware with configuration
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "*", // Specify your client URL
-    credentials: true, // Enable credentials (cookies, authorization headers, etc.)
+    origin: process.env.CLIENT_URL || "*", 
+    credentials: true, 
   })
 );
 
@@ -59,7 +59,7 @@ app.use('/api/users', userRouter);
 app.use('/api/orders', orderRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/reviews', reviewRoutes);
-app.use('/api/logs', logRouter);
+app.use('/api/loginlogs', logRouter);
 
 // Start the server
 const PORT = process.env.PORT || 5000;

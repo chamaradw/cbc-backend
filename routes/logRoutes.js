@@ -4,7 +4,7 @@ import { authenticate } from "../middleware/authenticate.js";
 
 const logRouter = express.Router();
 
-// ✅ Secure route with authentication middleware
-logRouter.get("/login-logs", authenticate, getLoginLogs);
+
+logRouter.get("/loginLogs", authenticate, getLoginLogs);
 
 export default logRouter;
