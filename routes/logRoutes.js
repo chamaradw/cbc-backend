@@ -5,6 +5,6 @@ import { authenticate } from "../middleware/authenticate.js";
 const logRouter = express.Router();
 
 
-logRouter.get("/loginLogs", authenticate, getLoginLogs);
+logRouter.get("/logs", authenticate, getLoginLogs);
 
 export default logRouter;
