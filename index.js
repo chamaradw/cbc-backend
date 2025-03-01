@@ -14,7 +14,7 @@ import logRouter from './routes/logRoutes.js';
 dotenv.config();
 const app = express();
 const mongoUrl = process.env.MONGO_DB_URI;
-const clientUrl = process.env.CLIENT_URL || "http://localhost:5173"; // ✅ Define explicitly
+const clientUrl = process.env.CLIENT_URL || "https://crystalbeautyclear.vercel.app"||"http://localhost:5173"; 
 
 // ✅ MongoDB connection with proper error handling
 const connectToDB = async () => {
