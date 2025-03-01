@@ -14,7 +14,11 @@ import logRouter from './routes/logRoutes.js';
 dotenv.config();
 const app = express();
 const mongoUrl = process.env.MONGO_DB_URI;
-const clientUrl = process.env.CLIENT_URL || "https://crystalbeautyclear.vercel.app"||"http://localhost:5173"; 
+
+// ✅ Allow multiple frontend URLs
+const allowedOrigins = process.env.CLIENT_URL
+  ? [process.env.CLIENT_URL]
+  : ["https://crystalbeautyclear.vercel.app", "http://localhost:5173"];
 
 // ✅ MongoDB connection with proper error handling
 const connectToDB = async () => {
@@ -32,27 +36,39 @@ const connectToDB = async () => {
 
 connectToDB();
 
-
+// ✅ Properly configured CORS middleware
 app.use(
   cors({
-    origin: clientUrl, 
-    credentials: true, 
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('❌ CORS policy: Not allowed by server.'));
+      }
+    },
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
+// ✅ Security Headers (Fixes COOP Issue)
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  res.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  next();
+});
 
+// ✅ Middleware for parsing JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
+// ✅ JWT Authentication Middleware
 app.use((req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) {
-    return next(); 
-  }
-  
+  if (!token) return next(); 
+
   jwt.verify(token, process.env.SECRET, (error, decoded) => {
     if (error) {
       return res.status(401).json({ error: '❌ Authentication failed' });
@@ -62,22 +78,21 @@ app.use((req, res, next) => {
   });
 });
 
-
+// ✅ Routes
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/reviews', reviewRoutes);
-app.use('/api/loginlogs', logRouter);  
+app.use('/api/loginlogs', logRouter);
 
-
-
+// ✅ Global Error Handler
 app.use((err, req, res, next) => {
-  console.error("❌ Server Error:", err);
-  res.status(500).json({ message: "Internal Server Error" });
+  console.error("❌ Server Error:", err.message);
+  res.status(500).json({ message: "Internal Server Error", error: err.message });
 });
 
-
+// ✅ Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
