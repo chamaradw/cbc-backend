@@ -52,26 +52,26 @@ export const getAllReviews = async (req, res) => {
 export const toggleHideReview = async (req, res) => {
   try {
     if (!req.user || req.user.type !== "admin") {
-      console.error("Unauthorized attempt to toggle review visibility.");
       return res.status(403).json({ message: "Access denied. Admins only." });
     }
 
-    const { productId } = req.params;
-    // Find review by productId, not _id
-    const review = await Review.findOne({ productId });
+    const { id } = req.params;  // Use _id instead of productId
+    const review = await Review.findById(id); 
+
     if (!review) {
-      console.error(`Review with productId ${productId} not found.`);
       return res.status(404).json({ message: "Review not found" });
     }
 
     review.isHidden = !review.isHidden;
     await review.save();
+
     res.status(200).json({ message: "Review visibility toggled", review });
   } catch (error) {
     console.error("Error toggling review visibility:", error);
     res.status(500).json({ message: "Internal server error", error });
   }
 };
+
 
 // Delete a review (admin-only)
 export const deleteReview = async (req, res) => {

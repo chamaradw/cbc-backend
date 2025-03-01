@@ -10,7 +10,7 @@ router.get("/:productId", getReviews);
 
 // Admin routes (protected)
 router.get("/", authenticate, getAllReviews);
-router.patch("/:productId/toggleHide", authenticate, toggleHideReview);
-router.delete("/:productId", authenticate, deleteReview);
+router.patch("/:id/toggleHide", authenticate, toggleHideReview);
+router.delete("/:id", authenticate, deleteReview);
 
 export default router;
