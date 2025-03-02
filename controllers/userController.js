@@ -95,13 +95,15 @@ export function getUser(req, res) {
     return res.status(401).json({ message: "Unauthorized: No user logged in" });
   }
 
-  // ✅ Use `.toObject()` if available, to exclude sensitive data
-  const { password, ...safeUserData } = req.user.toObject
-    ? req.user.toObject()
-    : req.user;
+  // ✅ Call `.toObject()` to remove Mongoose metadata
+  const userData = req.user.toObject ? req.user.toObject() : req.user;
+
+  // ✅ Exclude sensitive fields
+  const { password, ...safeUserData } = userData;
 
   return res.status(200).json(safeUserData);
 }
+
 
 // Get All Users (Admin Only)
 export async function getAllUsers(req, res) {
