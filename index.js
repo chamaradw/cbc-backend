@@ -36,21 +36,27 @@ const connectToDB = async () => {
 
 connectToDB();
 
-// ✅ Properly configured CORS middleware
+
 app.use(
   cors({
-    origin: (origin, callback) => {
+    origin: function (origin, callback) {
+      const allowedOrigins = process.env.CLIENT_URL
+        ? [process.env.CLIENT_URL]
+        : ["https://crystalbeautyclear.vercel.app", "http://localhost:5173"];
+
       if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
+        callback(null, true); // ✅ Allow if the origin is in the list or undefined (e.g., Postman)
       } else {
-        callback(new Error('❌ CORS policy: Not allowed by server.'));
+        console.error("❌ CORS Blocked:", origin);
+        callback(new Error("CORS policy: Not allowed by server."));
       }
     },
-    credentials: true,
+    credentials: true, // ✅ Required for cookies/auth headers
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization"], // ✅ Ensure auth headers are allowed
   })
 );
+
 
 // ✅ Security Headers (Fixes COOP Issue)
 app.use((req, res, next) => {
@@ -77,6 +83,7 @@ app.use((req, res, next) => {
     next();
   });
 });
+app.options("*", cors());
 
 // ✅ Routes
 app.use('/api/products', productRouter);
