@@ -125,3 +125,29 @@ export async function searchProducts(req, res) {
     });
   }
 }
+
+
+
+// Controller to get products by category
+export const getProductsByCategory = async (req, res) => {
+  const { category } = req.query;  // Extract category from query params
+
+  if (!category) {
+    return res.status(400).json({ message: "Category is required" });
+  }
+
+  try {
+    // Query the products collection to find matching category
+    // Use case-insensitive search in MongoDB for better matching
+    const products = await Product.find({ category: { $regex: category, $options: 'i' } });
+
+    if (products.length === 0) {
+      return res.status(404).json({ message: "No products found in this category." });
+    }
+
+    return res.status(200).json(products);  // Return the found products
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
