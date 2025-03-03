@@ -127,9 +127,11 @@ export async function searchProducts(req, res) {
 }
 
 
+ 
 
-// Controller to get products by category
-export const getProductsByCategory = async (req, res) => {
+// Function to get products by category
+// controllers/productController.js
+export async function getProductsByCategory(req, res) {
   const { category } = req.query;  // Extract category from query params
 
   if (!category) {
@@ -137,17 +139,21 @@ export const getProductsByCategory = async (req, res) => {
   }
 
   try {
-    // Query the products collection to find matching category
-    // Use case-insensitive search in MongoDB for better matching
-    const products = await Product.find({ category: { $regex: category, $options: 'i' } });
+    // Clean category name to be case-insensitive and trim any extra spaces
+    const cleanCategory = category.trim().toLowerCase();
+
+    const products = await Product.find({
+      category: { $regex: cleanCategory, $options: 'i' }
+    });
+    console.log("Received category:", category);
 
     if (products.length === 0) {
       return res.status(404).json({ message: "No products found in this category." });
     }
 
-    return res.status(200).json(products);  // Return the found products
+    return res.status(200).json(products);  // Return filtered products
   } catch (error) {
     console.error("Error fetching products:", error);
-    return res.status(500).json({ message: "Server Error", error: error.message });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-};
+}
