@@ -127,12 +127,11 @@ export async function searchProducts(req, res) {
 }
 
 
- 
 
-// Function to get products by category
-// controllers/productController.js
 export async function getProductsByCategory(req, res) {
   const { category } = req.query;  // Extract category from query params
+
+  console.log("Received query:", req.query);  // Log the full query params
 
   if (!category) {
     return res.status(400).json({ message: "Category is required" });
@@ -141,15 +140,20 @@ export async function getProductsByCategory(req, res) {
   try {
     // Clean category name to be case-insensitive and trim any extra spaces
     const cleanCategory = category.trim().toLowerCase();
+    console.log("Cleaned category:", cleanCategory);  // Debugging log
 
-    const products = await Product.find({
-      category: { $regex: cleanCategory, $options: 'i' }
-    });
-    console.log("Received category:", category);
+    // Log the query being sent to MongoDB
+    const query = { category: { $regex: cleanCategory, $options: 'i' } };
+    console.log("MongoDB query:", query);
+
+    const products = await Product.find(query);
 
     if (products.length === 0) {
+      console.log("No products found for category:", cleanCategory);  // Log when no products are found
       return res.status(404).json({ message: "No products found in this category." });
     }
+
+    console.log("Products found:", products.length);  // Log the number of products found
 
     return res.status(200).json(products);  // Return filtered products
   } catch (error) {
