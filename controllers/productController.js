@@ -126,8 +126,6 @@ export async function searchProducts(req, res) {
   }
 }
 
-
-
 export async function getProductsByCategory(req, res) {
   const { category } = req.query;  
 
