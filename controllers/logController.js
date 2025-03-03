@@ -11,7 +11,7 @@ export async function getLoginLogs(req, res) {
     }
 
     const logs = await LoginLog.find().sort({ createdAt: -1 });
-    console.log("✅ Successfully retrieved logs:", logs);
+    // console.log("✅ Successfully retrieved logs:", logs);
     res.status(200).json(logs);
   } catch (error) {
     console.error("❌ Error fetching login logs:", error);
