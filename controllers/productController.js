@@ -129,9 +129,9 @@ export async function searchProducts(req, res) {
 
 
 export async function getProductsByCategory(req, res) {
-  const { category } = req.query;  // Extract category from query params
+  const { category } = req.query;  
 
-  console.log("Received query:", req.query);  // Log the full query params
+  console.log("Received query:", req.query);  
 
   if (!category) {
     return res.status(400).json({ message: "Category is required" });
