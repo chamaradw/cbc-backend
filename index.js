@@ -10,6 +10,7 @@ import orderRoutes from './routes/orderRouter.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import wishlistRoutes from './routes/WishlistRoutes.js';
 import logRouter from './routes/logRoutes.js';
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -92,6 +93,8 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/loginlogs', logRouter);
+app.use("/api/dashboard", dashboardRoutes);
+
 
 // ✅ Global Error Handler
 app.use((err, req, res, next) => {

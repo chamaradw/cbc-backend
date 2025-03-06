@@ -297,3 +297,33 @@ export async function updateUser(req, res) {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 }
+
+
+// ✅ Get User Distribution Statistics
+export async function getUserStats(req, res) {
+  console.log("✅ getUserStats function was called!");
+
+  try {
+    // Ensure only admins can access stats
+    if (!req.user || req.user.type !== "admin") {
+      console.log("❌ Forbidden: Admin access required");
+      return res.status(403).json({ message: "Forbidden: Admin access required" });
+    }
+
+    // Count users by type
+    const adminCount = await User.countDocuments({ type: "admin" });
+    const customerCount = await User.countDocuments({ type: "customer" });
+    const guestCount = await User.countDocuments({ type: "guest" });
+
+    console.log(`✅ Admins: ${adminCount}, Customers: ${customerCount}, Guests: ${guestCount}`);
+
+    res.status(200).json({
+      admins: adminCount,
+      customers: customerCount,
+      guests: guestCount,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching user stats:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}

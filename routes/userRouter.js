@@ -2,6 +2,7 @@ import express from "express";
 import { createUser, loginUser, getUser, getAllUsers, deleteUser, googleLogin,getUserProfile  } from "../controllers/userController.js";
 import { authenticate } from "../middleware/authenticate.js";
 import { updateUser } from "../controllers/userController.js";
+import { getUserStats } from "../controllers/userController.js";
 
 
 const userRouter = express.Router();
@@ -14,6 +15,8 @@ userRouter.get("/all", authenticate, getAllUsers);
 userRouter.delete("/:id", authenticate, deleteUser);
 userRouter.get("/profile", authenticate, getUserProfile);
 userRouter.put("/update/:email", authenticate, updateUser);
+userRouter.get("/stats", authenticate, getUserStats);
+
 
 
 
